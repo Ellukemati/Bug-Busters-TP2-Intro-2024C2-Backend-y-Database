@@ -1,8 +1,8 @@
 # incluyan clases de lo que haga falta
-from fastapi import APIRouters  # , HTTPException, status
+from fastapi import APIRouter  # , HTTPException, status
 
 
-router = APIRouters()
+router = APIRouter()
 
 
 # apartir de este punto implementar los endpoints
