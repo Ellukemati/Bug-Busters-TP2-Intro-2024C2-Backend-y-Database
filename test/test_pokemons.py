@@ -13,8 +13,8 @@ def test_get_pokemon(client):
         "id": 392,
         "nombre": "infernape",
         "imagen": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/392.png",
-        "tipos": ["fuego", "lucha"],
-        "habilidades": ["blaze", "iron fist"],
+        "tipos": ["Fuego", "Lucha"],
+        "habilidades": ["Mar Llamas", "Puño Férreo"],
         "altura": 12,
         "peso": 550,
         "estadisticas": {
