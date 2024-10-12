@@ -1,5 +1,5 @@
 # incluyan clases de lo que haga falta
-from fastapi import APIRouter#,  HTTPException, status
+from fastapi import APIRouter,  HTTPException, status
 from models import Movimiento, Pokemon
 import csv
 
@@ -54,6 +54,14 @@ def getmoves_id_pokemon(id: int) -> list[Pokemon]:
     return(encontrar_pokemones_por_id_mov(int(id)))
 def encontrar_pokemones_por_id_mov(ID):
     lista_final: list[Pokemon] = []
+    with open("moves.csv", newline="") as movimientos:
+        existe = False
+        movs = csv.DictReader(movimientos)
+        for elem in movs:
+            if int(elem["id"]) == ID:
+                existe = True
+    if not existe:
+        raise HTTPException(status_code=404, detail="Movimiento no encontrado")
     with open("pokemon_moves.csv", newline="") as archivo_movimientos:# para que se ejecute bien el api,los csv tienen que estar en el mismo directorio que main.py
         lista_movimientos = csv.DictReader(archivo_movimientos)# generacion de lista, podria ser movida a otro py, puede no ser llevada ya que pede que exista para el getmoves
         lista_movimientos_filtrada = []

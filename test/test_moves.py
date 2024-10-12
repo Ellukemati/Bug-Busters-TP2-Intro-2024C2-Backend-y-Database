@@ -2,6 +2,11 @@
 from fastapi import APIRouter#,  HTTPException, status
 import csv
 from pydantic import BaseModel
+from fastapi.testclient import TestClient
+
+from main import app
+
+client = TestClient(app)
 class Movimiento(BaseModel):
     id: int | None = None
     nombre: str | None = None
@@ -68,8 +73,9 @@ with open ("pokemon.csv", newline="") as archivo:# para que se ejecute bien el a
         )
 
 
-lista_final: list[Pokemon] = []
+
 def encontrar_pokemones_por_id_mov(ID):
+    lista_final: list[Pokemon] = []
     with open("pokemon_moves.csv", newline="") as archivo_movimientos:# para que se ejecute bien el api,los csv tienen que estar en el mismo directorio que main.py
         lista_movimientos = csv.DictReader(archivo_movimientos)# generacion de lista, podria ser movida a otro py, puede no ser llevada ya que deberia existir para el getmoves
         lista_movimientos_filtrada = []
@@ -99,5 +105,14 @@ def encontrar_pokemones_por_id_mov(ID):
                                         tipo=item.tipo,
                                     )
                                 )
-    print (lista_final)
-encontrar_pokemones_por_id_mov(160)
+    return (len(lista_final))
+def test_id_160():
+    assert encontrar_pokemones_por_id_mov(160) == 3
+def test_id_27():
+    assert encontrar_pokemones_por_id_mov(27) == 5
+def test_id__menos_1():
+    assert encontrar_pokemones_por_id_mov(-1) == 0
+def test_id__827():
+    assert encontrar_pokemones_por_id_mov(827) == 0
+def test_id__10001():
+    assert encontrar_pokemones_por_id_mov(10001) == 0
