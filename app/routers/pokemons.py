@@ -22,3 +22,20 @@ def crear_pokemon(pokemon: Pokemon) -> Pokemon:
             )
     pokemons.append(pokemon)
     return pokemon
+
+
+@router.get("/")
+def mostrar_pokemons() -> list[Pokemon]:
+    return pokemons
+
+
+@router.delete("/{id}")
+def borrar_pokemon(id: int) -> Pokemon:
+    for a in pokemons:
+        if a.id == id:
+            pokemons.remove(a)
+            return a
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail="No se encontro ese id en nuestros pokemons",
+    )
