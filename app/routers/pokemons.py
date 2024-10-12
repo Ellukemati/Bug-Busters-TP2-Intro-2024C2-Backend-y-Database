@@ -6,7 +6,7 @@ import csv
 
 router = APIRouter()
 # generacion de lista, podria ser movida a otro py
-pokemones: list[Pokemon] = []
+pokemons: list[Pokemon] = []
 with open ("pokemon.csv", newline="") as archivo:# para que se ejecute bien el api,los csv tienen que estar en el mismo directorio que main.py
     lista_pokemon = csv.DictReader(archivo)
     imagen = (
@@ -39,7 +39,7 @@ with open ("pokemon.csv", newline="") as archivo:# para que se ejecute bien el a
             monstruo["tipo"] = tps[0] + "," + tps[1]
         else:
             monstruo["tipo"] = tps[0]
-        pokemones.append(
+        pokemons.append(
             Pokemon(
                 id=elem["id"],
                 nombre=elem["identifier"],
@@ -48,13 +48,7 @@ with open ("pokemon.csv", newline="") as archivo:# para que se ejecute bien el a
             )
         )
 
-# es necesaria la que este la lista de pokemons inicializada
-pokemons: list[Pokemon] = (
-    []
-)  # <--- borrar cuando se implemente la lista de pokemons con su correspondiente procesamiento
-  
-
-archivo.close()
+ 
 
 
 
@@ -63,7 +57,7 @@ archivo.close()
 # apartir de este punto implementar los endpoints
 @router.get("/getpokemon/")
 def get_pokemon() -> list[Pokemon]:
-    return pokemones
+    return pokemons
 @router.post("/", status_code=status.HTTP_201_CREATED)
 def crear_pokemon(pokemon: Pokemon) -> Pokemon:
     for a in pokemons:
