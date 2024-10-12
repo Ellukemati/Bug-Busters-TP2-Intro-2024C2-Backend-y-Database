@@ -24,11 +24,6 @@ def crear_pokemon(pokemon: Pokemon) -> Pokemon:
     return pokemon
 
 
-@router.get("/")
-def mostrar_pokemons() -> list[Pokemon]:
-    return pokemons
-
-
 @router.delete("/{id}")
 def borrar_pokemon(id: int) -> Pokemon:
     for a in pokemons:
