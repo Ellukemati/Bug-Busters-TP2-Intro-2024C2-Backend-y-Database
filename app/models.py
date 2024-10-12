@@ -10,7 +10,7 @@ class Movimiento(BaseModel):
     categoria: str | None = None
     efecto: str | None = None
 class Pokemon(BaseModel):
-    num_indice: int
+    id: int
     nombre: str
-    link_imagen: str
+    imagen: str
     tipo: str
