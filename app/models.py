@@ -1,6 +1,8 @@
 from pydantic import BaseModel
+
 class Pokemon(BaseModel):
-    num_indice: int
+    id: int
     nombre: str
-    link_imagen: str
+    imagen: str
     tipo: str
+
