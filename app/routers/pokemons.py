@@ -1,53 +1,77 @@
 # incluyan clases de lo que haga falta
-from fastapi import APIRouter  # , HTTPException, status
 from models import Pokemon
+from fastapi import APIRouter, HTTPException, status
+import csv
+
 
 router = APIRouter()
 # generacion de lista, podria ser movida a otro py
 pokemones: list[Pokemon] = []
-archivo = open('pokemon.csv', 'r')
-lista_pokemon = archivo.readlines()
-archivo.close()
-lista_pokemon.pop(0)
-imagen = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/<id>.png"
-for elem in lista_pokemon:
-    individuo = elem.split(",")
-    tipos_nombres = open("type_names.csv", 'r')
-    lista_tipos = tipos_nombres.readlines()
-    tipos_nombres.close()
-    monstruo = {'indice': 1, 'nombre': 'B', 'link_img': 'C', 'tipo': ""}
-    archivos_tipos = open("pokemon_types.csv", 'r')
-    pokemon_tipo = archivos_tipos.readlines()
-    archivos_tipos.close()
-    tps=[-1,-1]
-    posicion = 0
-    for i in pokemon_tipo:
-        tipos = i.split(",")
-        if (tipos[0] == individuo[0]):
-            tps[posicion] = tipos[1]
-            posicion = (posicion + 1)
-    if (tps[1] == -1):
-        del(tps[1])
-    tipos_nombres = open("type_names.csv", 'r')
-    lista_tipos = tipos_nombres.readlines()
-    tipos_nombres.close()
-    for i in lista_tipos:
-        lista_elem_tipos = i.split(",")
-        if (lista_elem_tipos[1] == "7"):
+with open ("pokemon.csv", newline="") as archivo:# para que se ejecute bien el api,los csv tienen que estar en el mismo directorio que main.py
+    lista_pokemon = csv.DictReader(archivo)
+    imagen = (
+        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/<id>.png"
+    )
+    for elem in lista_pokemon:
+        monstruo = {"tipo": ""}
+        with open ("pokemon_types.csv", newline="") as archivos_tipos:
+            pokemon_tipo = csv.DictReader(archivos_tipos)
+            tps = [-1, -1]
             posicion = 0
-            for i in tps:
-                if (i == lista_elem_tipos[0]):
-                    tipo = lista_elem_tipos[2]
-                    tipo = tipo.replace('\n', '')
-                    tps[posicion] = tipo
-                posicion = (posicion + 1)
-    try:
-        monstruo['tipo']= tps[0] + ',' + tps[1]
-    except:
-        monstruo['tipo']= tps[0]
-    pokemones.append(Pokemon(num_indice=individuo[0], nombre=individuo[1], link_imagen=imagen.replace("<id>", individuo[0]), tipo=monstruo['tipo']))
+            for fila in pokemon_tipo:
+                if fila["pokemon_id"] == elem["id"]:
+                    tps[posicion] = fila["type_id"]
+                    posicion = posicion + 1
+            if tps[1] == -1:
+                del tps[1]
+        with open ("type_names.csv", newline="") as tipos_nombres:
+            lista_tipos = csv.DictReader(tipos_nombres)
+            for fila in lista_tipos:
+                if fila["local_language_id"] == "7":
+                    posicion = 0
+                    for i in tps:
+                        if i == fila["type_id"]:
+                            tipo = fila["name"]
+                            tipo = tipo.replace("\n", "")
+                            tps[posicion] = tipo
+                        posicion = posicion + 1
+        if len(tps) == 2:
+            monstruo["tipo"] = tps[0] + "," + tps[1]
+        else:
+            monstruo["tipo"] = tps[0]
+        pokemones.append(
+            Pokemon(
+                id=elem["id"],
+                nombre=elem["identifier"],
+                imagen=imagen.replace("<id>", elem["id"]),
+                tipo=monstruo["tipo"],
+            )
+        )
+
+# es necesaria la que este la lista de pokemons inicializada
+pokemons: list[Pokemon] = (
+    []
+)  # <--- borrar cuando se implemente la lista de pokemons con su correspondiente procesamiento
+  
+
+archivo.close()
+
+
+
+
 
 # apartir de este punto implementar los endpoints
 @router.get("/getpokemon/")
 def get_pokemon() -> list[Pokemon]:
     return pokemones
+@router.post("/", status_code=status.HTTP_201_CREATED)
+def crear_pokemon(pokemon: Pokemon) -> Pokemon:
+    for a in pokemons:
+        if a.id == pokemon.id:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Ya existe un pokemon con ese id",
+            )
+    pokemons.append(pokemon)
+    return pokemon
+
