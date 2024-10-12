@@ -49,7 +49,7 @@ with open ("pokemon.csv", newline="") as archivo:# para que se ejecute bien el a
                 tipo=monstruo["tipo"],
             )
         )
-@router.get("/{id}")
+@router.get("/{id}/pokemon")
 def getmoves_id_pokemon(id: int) -> list[Pokemon]:
     return(encontrar_pokemones_por_id_mov(int(id)))
 def encontrar_pokemones_por_id_mov(ID):
