@@ -2,10 +2,14 @@ from pydantic import BaseModel
 
 
 class Pokemon(BaseModel):
-    id: int
+    pokemon_id: int
     nombre: str
     imagen: str
-    tipo: str
+    tipos: list[str]
+    habilidades: list[str]
+    altura: int
+    peso: int
+    estadisticas: dict[str, int]
 
 
 class Naturaleza(BaseModel):

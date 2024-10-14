@@ -1,5 +1,5 @@
 # incluyan clases de lo que haga falta
-from app.models import Pokemon, Naturaleza
+from models import Pokemon, Naturaleza
 from fastapi import APIRouter, HTTPException, status
 import csv
 
