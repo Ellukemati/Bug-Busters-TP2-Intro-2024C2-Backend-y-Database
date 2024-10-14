@@ -1,5 +1,5 @@
 # incluyan clases de lo que haga falta
-from models import Pokemon
+from app.models import Pokemon
 from fastapi import APIRouter, HTTPException, status
 
 
