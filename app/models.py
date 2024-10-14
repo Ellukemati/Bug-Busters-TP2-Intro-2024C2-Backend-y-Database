@@ -9,4 +9,3 @@ class Pokemon(BaseModel):
     altura: int
     peso: int
     estadisticas: dict[str, int]
-    tipo: str
