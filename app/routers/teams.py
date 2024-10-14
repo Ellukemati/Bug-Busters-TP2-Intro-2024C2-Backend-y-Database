@@ -1,5 +1,5 @@
 # incluyan clases de lo que haga falta
-from fastapi import APIRouter  # , HTTPException, status
+from fastapi import APIRouter, HTTPException, status
 
 
 router = APIRouter()
