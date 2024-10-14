@@ -1,6 +1,6 @@
 # incluyan clases de lo que haga falta
 from fastapi import APIRouter, HTTPException, status
-from app.models import Pokemon, Equipo
+from models import Pokemon, Equipo
 
 router = APIRouter()
 

@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
-from app.models import Pokemon, Equipo
-from app.main import app
+from models import Pokemon, Equipo
+from main import app
 from app.routers.teams import teams
 
 client = TestClient(app)
