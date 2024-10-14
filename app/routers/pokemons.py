@@ -55,7 +55,7 @@ with open ("pokemon.csv", newline="") as archivo:# para que se ejecute bien el a
 
 
 # apartir de este punto implementar los endpoints
-@router.get("/getpokemon/")
+@router.get("/pokemon/")
 def get_pokemon() -> list[Pokemon]:
     return pokemons
 @router.post("/", status_code=status.HTTP_201_CREATED)
