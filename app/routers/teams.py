@@ -1,6 +1,6 @@
 # incluyan clases de lo que haga falta
 from fastapi import APIRouter, HTTPException, status
-from models import Pokemon, Equipo
+from models import Equipo
 
 router = APIRouter()
 
@@ -24,3 +24,19 @@ def post_team(team: Equipo) -> list[Equipo]:
 
     teams.append(team)
     return teams
+
+
+@router.delete("/{id}")
+def borrar_equipo(id: int) -> Equipo:
+    for equipo in teams:
+        print("Tipo de equipo:", type(equipo))
+        if isinstance(equipo, dict):
+            print(equipo["id_equipo"])
+            return
+        if equipo.id_equipo == id:
+            teams.remove(equipo)
+            return equipo
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail="No se encontro un equipo con ese id",
+    )
