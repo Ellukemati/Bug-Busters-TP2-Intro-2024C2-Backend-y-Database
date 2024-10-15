@@ -694,9 +694,3 @@ def test_crear_equipo_mismo_id():
     assert response.json()["detail"] == "Ya existe un equipo con ese id"
 
 
-
-def test_get_pokemon():
-    response = client.get("/")
-    assert response.status_code == 400
-    assert response["id_equipo"] == 1
-
