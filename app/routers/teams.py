@@ -29,10 +29,6 @@ def post_team(team: Equipo) -> list[Equipo]:
 @router.delete("/{id}")
 def borrar_equipo(id: int) -> Equipo:
     for equipo in teams:
-        print("Tipo de equipo:", type(equipo))
-        if isinstance(equipo, dict):
-            print(equipo["id_equipo"])
-            return
         if equipo.id_equipo == id:
             teams.remove(equipo)
             return equipo
