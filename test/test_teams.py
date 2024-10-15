@@ -694,3 +694,10 @@ def test_crear_equipo_mismo_id():
     assert response.json()["detail"] == "Ya existe un equipo con ese id"
 
 
+def test_get_teams():
+    teams.clear()
+    lista_vacia: list[Equipo] = []
+    respuesta = client.get("/teams/")
+    contenido = respuesta.json()
+    assert respuesta.status_code == 200
+    assert contenido == lista_vacia
