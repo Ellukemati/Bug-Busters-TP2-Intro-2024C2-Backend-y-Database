@@ -11,6 +11,8 @@ class Pokemon(BaseModel):
     peso: int
     estadisticas: dict[str, int]
     tipo: str
+    cadena_evolutiva: list[int]
+
 
 class Naturaleza(BaseModel):
     id: int

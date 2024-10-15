@@ -26,6 +26,7 @@ def test_borrar_un_pokemon():
             "accuracy": 100,
             "evasion": 100,
         },
+        "cadena_evolutiva": [390, 391, 392],
     }
     pokemons.append(pokemon_existente)
     response = client.delete("pokemons/392")
