@@ -1,5 +1,5 @@
 from fastapi.testclient import TestClient
-from models import Pokemon, Equipo
+from models import Pokemon, Equipo, Naturaleza, Movimiento, Integrante_pokemon
 from main import app
 from app.routers.teams import teams
 
@@ -692,3 +692,12 @@ def test_crear_equipo_mismo_id():
 
     assert response.status_code == 400
     assert response.json()["detail"] == "Ya existe un equipo con ese id"
+
+
+def test_get_teams():
+    teams.clear()
+    lista_vacia: list[Equipo] = []
+    respuesta = client.get("/teams/")
+    contenido = respuesta.json()
+    assert respuesta.status_code == 200
+    assert contenido == lista_vacia
