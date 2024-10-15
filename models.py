@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 
+
 class Pokemon(BaseModel):
     pokemon_id: int
     nombre: str
@@ -9,6 +10,8 @@ class Pokemon(BaseModel):
     altura: int
     peso: int
     estadisticas: dict[str, int]
+    cadena_evolutiva: list[int]
+
 
 class Naturaleza(BaseModel):
     id: int

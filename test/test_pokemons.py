@@ -25,6 +25,7 @@ def test_crear_pokemon():
             "accuracy": 100,
             "evasion": 100,
         },
+        "cadena_evolutiva": [390, 391, 392],
     }
     response = client.post("/pokemons", json=nuevo_pokemon)
 
@@ -51,6 +52,7 @@ def test_crear_pokemon_con_id_existente():
             "accuracy": 100,
             "evasion": 100,
         },
+        "cadena_evolutiva": [390, 391, 392],
     }
     pokemons.append(pokemon_existente)
 
