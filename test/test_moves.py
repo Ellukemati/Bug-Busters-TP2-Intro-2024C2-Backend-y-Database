@@ -108,11 +108,7 @@ def encontrar_pokemones_por_id_mov(ID):
     return (len(lista_final))
 def test_id_160():
     assert encontrar_pokemones_por_id_mov(160) == 3
-def test_id_27():
     assert encontrar_pokemones_por_id_mov(27) == 5
-def test_id__menos_1():
     assert encontrar_pokemones_por_id_mov(-1) == 0
-def test_id__827():
     assert encontrar_pokemones_por_id_mov(827) == 0
-def test_id__10001():
     assert encontrar_pokemones_por_id_mov(10001) == 0
