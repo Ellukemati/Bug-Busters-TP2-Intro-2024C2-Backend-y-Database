@@ -3,6 +3,7 @@ from app.routers.pokemons import pokemons
 from models import Pokemon
 from main import app
 
+
 client = TestClient(app)
 
 
@@ -55,8 +56,22 @@ def test_crear_pokemon_con_id_existente():
         "cadena_evolutiva": [390, 391, 392],
     }
     pokemons.append(pokemon_existente)
-
     response = client.post("/pokemons", json=pokemon_existente)
 
     assert response.status_code == 400
     assert response.json()["detail"] == "Ya existe un pokemon con ese id"
+    
+    
+    
+    
+    #se rompio algo?
+    response = client.delete("pokemons/392")
+
+    assert response.status_code == 200
+
+
+def test_borrar_pokemon_no_existe():
+    response = client.delete("/pokemons/10")
+    assert response.status_code == 404
+    assert response.json()["detail"] == "No se encontro ese id en nuestros pokemons"
+
