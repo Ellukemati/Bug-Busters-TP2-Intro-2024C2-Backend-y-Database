@@ -25,8 +25,3 @@ def post_team(team: Equipo) -> list[Equipo]:
 
     teams.append(team)
     return teams
-
-
-@router.get("/")
-def show_team() -> list[Equipo]:
-    return teams
