@@ -1,9 +1,7 @@
-from collections.abc import Generator
-
-import pytest
 from fastapi.testclient import TestClient
-
-from app.main import app
+from collections.abc import Generator
+from main import app
+import pytest
 
 
 @pytest.fixture(scope="module")

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from fastapi import status
-from app.models import Pokemon
+from models import Pokemon
 import csv
 
 router = APIRouter()
@@ -13,7 +13,10 @@ POKEMON_ABILITIES_CSV = "pokemon_abilities.csv"
 ABILITY_NAMES_CSV = "ability_names.csv"
 POKEMON_EVOLUTIONS_CSV = "pokemon_evolutions.csv"
 
-POKEMON_DATA = {} # Diccionario de todos los Pokémon con sus datos cargados, a los que se accede por ID.
+POKEMON_DATA = (
+    {}
+)  # Diccionario de todos los Pokémon con sus datos cargados, a los que se accede por ID.
+
 
 def cargar_todos_los_pokemon():
     global POKEMON_DATA
@@ -39,7 +42,7 @@ def cargar_todos_los_pokemon():
             pokemon_id = int(fila["id"])
             imagen_url = f"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{pokemon_id}.png"
 
-            cadena_evolutiva = [] # Armado de cadena evolutiva.
+            cadena_evolutiva = []  # Armado de cadena evolutiva.
             anteriores = []
             id_actual = pokemon_id
             while id_actual in evoluciones and evoluciones[id_actual]["anteriores"]:
@@ -47,7 +50,7 @@ def cargar_todos_los_pokemon():
                 id_actual = evoluciones[id_actual]["anteriores"][0]
             cadena_evolutiva.extend(reversed(anteriores))
             cadena_evolutiva.append(pokemon_id)
-            siguientes = evoluciones.get(pokemon_id, {}).get('siguientes', [])
+            siguientes = evoluciones.get(pokemon_id, {}).get("siguientes", [])
             cadena_evolutiva.extend(siguientes)
 
             pokemon = Pokemon(
@@ -68,7 +71,7 @@ def cargar_todos_los_pokemon():
                     "accuracy": 0,
                     "evasion": 0,
                 },
-                cadena_evolutiva = cadena_evolutiva
+                cadena_evolutiva=cadena_evolutiva,
             )
             POKEMON_DATA[pokemon_id] = pokemon
     for pokemon in POKEMON_DATA.values():
@@ -133,6 +136,7 @@ def cargar_todos_los_pokemon():
                 pokemon.estadisticas["accuracy"] = base_stat
             elif stat_id == "8":
                 pokemon.estadisticas["evasion"] = base_stat
+
 
 cargar_todos_los_pokemon()
 
