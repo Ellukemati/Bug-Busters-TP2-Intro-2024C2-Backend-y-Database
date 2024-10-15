@@ -11,17 +11,45 @@ POKEMON_TYPES_CSV = "pokemon_types.csv"
 TYPE_NAMES_CSV = "type_names.csv"
 POKEMON_ABILITIES_CSV = "pokemon_abilities.csv"
 ABILITY_NAMES_CSV = "ability_names.csv"
+POKEMON_EVOLUTIONS_CSV = "pokemon_evolutions.csv"
 
 POKEMON_DATA = {} # Diccionario de todos los Pokémon con sus datos cargados, a los que se accede por ID.
 
 def cargar_todos_los_pokemon():
     global POKEMON_DATA
 
+    evoluciones = {}
+    with open(POKEMON_EVOLUTIONS_CSV, newline="", encoding="utf-8") as archivo_csv:
+        evoluciones_reader = csv.DictReader(archivo_csv)
+        for fila in evoluciones_reader:
+            pokemon_id = int(fila["id"])
+            evolution_id = int(fila["evolution_id"])
+
+            if pokemon_id not in evoluciones:
+                evoluciones[pokemon_id] = {"siguientes": [], "anteriores": []}
+            evoluciones[pokemon_id]["siguientes"].append(evolution_id)
+
+            if evolution_id not in evoluciones:
+                evoluciones[evolution_id] = {"siguientes": [], "anteriores": []}
+            evoluciones[evolution_id]["anteriores"].append(pokemon_id)
+
     with open(POKEMON_CSV, newline="", encoding="utf-8") as archivo_csv:
         pokemon_reader = csv.DictReader(archivo_csv)
         for fila in pokemon_reader:
             pokemon_id = int(fila["id"])
             imagen_url = f"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{pokemon_id}.png"
+
+            cadena_evolutiva = [] # Armado de cadena evolutiva.
+            anteriores = []
+            id_actual = pokemon_id
+            while id_actual in evoluciones and evoluciones[id_actual]["anteriores"]:
+                anteriores.extend(evoluciones[id_actual]["anteriores"])
+                id_actual = evoluciones[id_actual]["anteriores"][0]
+            cadena_evolutiva.extend(reversed(anteriores))
+            cadena_evolutiva.append(pokemon_id)
+            siguientes = evoluciones.get(pokemon_id, {}).get('siguientes', [])
+            cadena_evolutiva.extend(siguientes)
+
             pokemon = Pokemon(
                 pokemon_id=pokemon_id,
                 nombre=fila["identifier"],
@@ -39,9 +67,12 @@ def cargar_todos_los_pokemon():
                     "speed": 0,
                     "accuracy": 0,
                     "evasion": 0,
-                }
+                },
+                cadena_evolutiva = cadena_evolutiva
             )
             POKEMON_DATA[pokemon_id] = pokemon
+    for pokemon in POKEMON_DATA.values():
+        print(f"{pokemon.nombre}: {pokemon.cadena_evolutiva}")
 
     with open(POKEMON_TYPES_CSV, newline="", encoding="utf-8") as archivo_csv:
         tipo_reader = csv.DictReader(archivo_csv)
@@ -106,7 +137,7 @@ def cargar_todos_los_pokemon():
 cargar_todos_los_pokemon()
 
 
-@router.get("/pokemons/{id}", response_model=Pokemon)
+@router.get("/{id}", response_model=Pokemon)
 def get_pokemon_by_id(id: int):
     if id in POKEMON_DATA:
         return POKEMON_DATA[id]
