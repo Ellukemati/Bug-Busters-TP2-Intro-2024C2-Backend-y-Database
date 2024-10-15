@@ -7,4 +7,8 @@ api_router = APIRouter()
 
 api_router.include_router(moves_router, prefix="/moves", tags=["moves"])
 api_router.include_router(pokemons_router, prefix="/pokemons", tags=["pokemons"])
+<<<<<<< HEAD
 api_router.include_router(teams_router, prefix="/teams", tags=["teams"])
+=======
+api_router.include_router(teams_router, prefix="/teams", tags=["teams"])
+>>>>>>> parte_1

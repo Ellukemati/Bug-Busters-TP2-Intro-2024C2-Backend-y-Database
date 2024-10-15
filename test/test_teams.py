@@ -1,7 +1,6 @@
 from fastapi.testclient import TestClient
 from models import Pokemon, Equipo, Naturaleza, Movimiento, Integrante_pokemon
 from main import app
-import json
 from app.routers.teams import teams
 
 client = TestClient(app)
