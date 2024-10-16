@@ -24,7 +24,18 @@ def post_team(team: Equipo) -> list[Equipo]:
 
     teams.append(team)
     return teams
+
+
 @router.get("/")
 def get_teams() -> list[Equipo]:
     return teams
 
+
+@router.get("/{id}")
+def show_id_team(id: int) -> Equipo:
+    for equipo in teams:
+        if equipo["id_equipo"] == id:
+            return equipo
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND, detail="No se encontro el equipo"
+    )
