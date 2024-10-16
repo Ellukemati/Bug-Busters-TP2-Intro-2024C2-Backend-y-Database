@@ -1,10 +1,10 @@
-from fastapi import FastAPI
-from routers.moves import router as moves_router
-from routers.pokemons import router as pokemons_router
-from routers.teams import router as teams_router
+from fastapi import APIRouter
+from app.routers.moves import router as moves_router
+from app.routers.pokemons import router as pokemons_router
+from app.routers.teams import router as teams_router
 
-app = FastAPI()
+api_router = APIRouter()
 
-app.include_router(moves_router, prefix="/moves", tags=["moves"])
-app.include_router(pokemons_router, prefix="/pokemons", tags=["pokemons"])
-app.include_router(teams_router, prefix="/teams", tags=["teams"])
+api_router.include_router(moves_router, prefix="/moves", tags=["moves"])
+api_router.include_router(pokemons_router, prefix="/pokemons", tags=["pokemons"])
+api_router.include_router(teams_router, prefix="/teams", tags=["teams"])
