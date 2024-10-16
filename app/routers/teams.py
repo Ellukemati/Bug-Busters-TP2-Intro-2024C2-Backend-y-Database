@@ -1,6 +1,6 @@
 # incluyan clases de lo que haga falta
 from fastapi import APIRouter, HTTPException, status
-from models import Pokemon, Equipo
+from models import Movimiento, Pokemon, Integrante_pokemon, Equipo, Naturaleza
 
 router = APIRouter()
 
@@ -24,3 +24,7 @@ def post_team(team: Equipo) -> list[Equipo]:
 
     teams.append(team)
     return teams
+@router.get("/")
+def get_teams() -> list[Equipo]:
+    return teams
+
