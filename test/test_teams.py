@@ -1,5 +1,5 @@
 from fastapi.testclient import TestClient
-from models import Equipo
+from models import Pokemon, Equipo, Naturaleza, Movimiento, Integrante_pokemon
 from main import app
 
 
@@ -870,3 +870,10 @@ def test_borrar_equipo_no_existe():
     response = client.delete("/teams/99")
     assert response.status_code == 404
     assert response.json()["detail"] == "No se encontro un equipo con ese id"
+def test_get_teams():
+    teams.clear()
+    lista_vacia: list[Equipo] = []
+    respuesta = client.get("/teams/")
+    contenido = respuesta.json()
+    assert respuesta.status_code == 200
+    assert contenido == lista_vacia
