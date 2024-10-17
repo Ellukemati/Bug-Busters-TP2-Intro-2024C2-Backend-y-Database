@@ -1,4 +1,4 @@
-# incluyan clases de lo que haga falta
+
 from fastapi import APIRouter, HTTPException, status
 import csv
 from models import Pokemon
@@ -6,165 +6,148 @@ from models import Pokemon
 
 
 router = APIRouter()
-# generacion de lista, podria ser movida a otro py
-pokemons: list[Pokemon] = []
-with open ("pokemon.csv", newline="") as archivo:# para que se ejecute bien el api,los csv tienen que estar en el mismo directorio que main.py
-    lista_pokemon = csv.DictReader(archivo)
-    imagen = (
-        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/<id>.png"
-    )
-    for elem in lista_pokemon:
-        monstruo = {"tipo": ""}
-        with open ("pokemon_types.csv", newline="") as archivos_tipos:
-            pokemon_tipo = csv.DictReader(archivos_tipos)
-            tps = [-1, -1]
-            posicion = 0
-            for fila in pokemon_tipo:
-                if fila["pokemon_id"] == elem["id"]:
-                    tps[posicion] = fila["type_id"]
-                    posicion = posicion + 1
-            if tps[1] == -1:
-                del tps[1]
-        with open ("type_names.csv", newline="") as tipos_nombres:
-            lista_tipos = csv.DictReader(tipos_nombres)
-            for fila in lista_tipos:
-                if fila["local_language_id"] == "7":
-                    posicion = 0
-                    for i in tps:
-                        if i == fila["type_id"]:
-                            tipo = fila["name"]
-                            tipo = tipo.replace("\n", "")
-                            tps[posicion] = tipo
-                        posicion = posicion + 1
-        lista_tps: list[str] = []
-        for i in tps:
-            lista_tps.append(i)
-        if len(tps) == 2:
-            monstruo["tipo"] = tps[0] + "," + tps[1]
-        else:
-            monstruo["tipo"] = tps[0]
-        with open ("pokemon_abilities.csv", newline="") as habilidades_pokemon:
-            lista_habilidades = csv.DictReader(habilidades_pokemon)
-            habilidades = []
-            for fila in lista_habilidades:
-                if fila["pokemon_id"] == elem["id"]:
-                    habilidades.append(fila["ability_id"])
-        with open ("ability_names.csv", newline="") as habilidades_nombres:
-            lista_habilidades = csv.DictReader(habilidades_nombres)
-            lista_filtrada = []
-            for fila in lista_habilidades:
-                if (fila["local_language_id"] == "7"):
-                    lista_filtrada.append(fila)
-            habilidades_lista_nombre: list[str] = []
-            for pos in habilidades:
-                habilidades_lista_nombre.append("a")
-            for parte in lista_filtrada:
-                posicion = 0
-                for fila in habilidades:
-                    if (int(fila) == int(parte["ability_id"])):
-                        habilidades_lista_nombre[posicion] = parte["name"]
-                    posicion = posicion + 1
-            i=0
-            while (i < len(habilidades)):
-                habilidades[i] = habilidades_lista_nombre[i]
-                i = i + 1
-        dicc_stats = {"hp": 0,
-                      "attack": 0,
-                      "defense": 0,
-                      "special-attack": 0,
-                      "special-defense": 0,
-                      "speed": 0,
-                      "accuracy": 0,
-                      "evasion": 0,}  
-        id_evolutivo=elem["id"]
-        orden_evolutivo=[]
-        orden_evolutivo.append(int(elem["order"]))
-        temp_id=int(elem["id"])
-        temp_orden=int(elem["order"])
-        with open ("pokemon.csv", newline="") as archivo2:
-            segunda_lista_pokemones = csv.DictReader(archivo2)
-            finalizo = False
-            fin_preevo = False
-            fin_evo = False
-            while not finalizo:
-                for linea in segunda_lista_pokemones:
-                    if (int(linea["id"]) == (int(elem["id"]) - 1) and not fin_preevo):
-                        if int(linea["order"]) == (int(elem["order"]) - 1):
-                            orden_evolutivo.append(int(linea["order"]))
-                            temp_id=int(linea["id"])
-                            temp_orden=int(linea["order"])
-                        else:
-                            fin_preevo = True
-                            temp_id=int(elem["id"])
-                            temp_orden=int(elem["order"])
-                    elif (int(linea["id"]) == (int(elem["id"]) + 1) and not fin_evo):
-                        if int(linea["order"]) == (int(elem["order"]) + 1):
-                            orden_evolutivo.append(int(linea["order"]))
-                            temp_id=int(linea["id"])
-                            temp_orden=int(linea["order"])
-                        else:
-                            fin_evo = True
-                            temp_id=int(elem["id"])
-                            temp_orden=int(elem["order"])
-                if (fin_preevo and fin_evo):
-                    finalizo = True
-        orden_evolutivo.sort()
-        with open("stats.csv", newline="") as estadisticas:
-            lista_estadisticas = csv.DictReader(estadisticas)
-            for fila in lista_estadisticas:
-                with open ("pokemon_stats.csv", newline="") as stats:
-                    lista_stats = csv.DictReader(stats)
-                    for linea in lista_stats:
-                        if (linea["pokemon_id"] == elem["id"] and linea["stat_id"] == fila["id"]):
-                            if int(fila["id"]) == 1:
-                                dicc_stats["hp"] = int(linea["base_stat"])
-                            elif int(fila["id"]) == 2:
-                                dicc_stats["attack"] = int(linea["base_stat"])
-                            elif int(fila["id"]) == 3:
-                                dicc_stats["defense"] = int(linea["base_stat"])
-                            elif int(fila["id"]) == 4:
-                                dicc_stats["special-attack"] = int(linea["base_stat"])
-                            elif int(fila["id"]) == 5:
-                                dicc_stats["special-defense"] = int(linea["base_stat"])
-                            elif int(fila["id"]) == 6:
-                                dicc_stats["speed"] = int(linea["base_stat"])
-                            elif int(fila["id"]) == 7:
-                                dicc_stats["accuracy"] = int(linea["base_stat"])
-                            elif int(fila["id"]) == 8:
-                                dicc_stats["evasion"] = int(linea["base_stat"])
-        
-        pokemons.append(
-            Pokemon(
-                pokemon_id=int(elem["id"]),
-                nombre=elem["identifier"],
-                imagen=imagen.replace("<id>", elem["id"]),
-                tipos=lista_tps,
-                habilidades=habilidades_lista_nombre,
-                altura=int(elem["height"]),
-                peso=int(elem["weight"]),
-                estadisticas=dicc_stats,
-                cadena_evolutiva=orden_evolutivo
-            )
-        )
 
- 
+pokemons: list[Pokemon] = []
+POKEMON_DATA = (
+    {}
+)  # Diccionario de todos los Pokémon con sus datos cargados, a los que se accede por ID.
+
+
+def cargar_todos_los_pokemon():
+
+    evoluciones = {}
+    with open("pokemon_evolutions.csv", newline="", encoding="utf-8") as archivo_csv:
+        evoluciones_reader = csv.DictReader(archivo_csv)
+        for fila in evoluciones_reader:
+            pokemon_id = int(fila["id"])
+            evolution_id = int(fila["evolution_id"])
+
+            if pokemon_id not in evoluciones:
+                evoluciones[pokemon_id] = {"siguientes": [], "anteriores": []}
+            evoluciones[pokemon_id]["siguientes"].append(evolution_id)
+
+            if evolution_id not in evoluciones:
+                evoluciones[evolution_id] = {"siguientes": [], "anteriores": []}
+            evoluciones[evolution_id]["anteriores"].append(pokemon_id)
+
+    with open("pokemon.csv", newline="", encoding="utf-8") as archivo_csv:
+        pokemon_reader = csv.DictReader(archivo_csv)
+        for fila in pokemon_reader:
+            pokemon_id = int(fila["id"])
+            imagen_url = f"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{pokemon_id}.png"
+
+            cadena_evolutiva = []  # Armado de cadena evolutiva.
+            anteriores = []
+            id_actual = pokemon_id
+            while id_actual in evoluciones and evoluciones[id_actual]["anteriores"]:
+                anteriores.extend(evoluciones[id_actual]["anteriores"])
+                id_actual = evoluciones[id_actual]["anteriores"][0]
+            cadena_evolutiva.extend(reversed(anteriores))
+            cadena_evolutiva.append(pokemon_id)
+            siguientes = evoluciones.get(pokemon_id, {}).get("siguientes", [])
+            cadena_evolutiva.extend(siguientes)
+
+            pokemon = Pokemon(
+                pokemon_id=pokemon_id,
+                nombre=fila["identifier"],
+                imagen=imagen_url,
+                tipos=[],
+                habilidades=[],
+                altura=int(fila["height"]),
+                peso=int(fila["weight"]),
+                estadisticas={
+                    "hp": 0,
+                    "attack": 0,
+                    "defense": 0,
+                    "special-attack": 0,
+                    "special-defense": 0,
+                    "speed": 0,
+                    "accuracy": 0,
+                    "evasion": 0,
+                },
+                cadena_evolutiva=cadena_evolutiva,
+            )
+            pokemons.append(pokemon)
+
+    with open("pokemon_types.csv", newline="", encoding="utf-8") as archivo_csv:
+        tipo_reader = csv.DictReader(archivo_csv)
+        pokemon_tipos_aux = {}
+        for fila in tipo_reader:
+            pokemon_id = int(fila["pokemon_id"])
+            tipo_id = fila["type_id"]
+            if pokemon_id not in pokemon_tipos_aux:
+                pokemon_tipos_aux[pokemon_id] = []
+            pokemon_tipos_aux[pokemon_id].append(tipo_id)
+
+    with open("type_names.csv", newline="", encoding="utf-8") as archivo_csv:
+        nombre_tipo_reader = csv.DictReader(archivo_csv)
+        for fila in nombre_tipo_reader:
+            if fila["local_language_id"] == "7":
+                for pokemon_id, tipos_ids in pokemon_tipos_aux.items():
+                    if fila["type_id"] in tipos_ids:
+                        for elem in pokemons:
+                            if elem.pokemon_id == pokemon_id:
+                                elem.tipos.append(fila["name"])
+
+    with open("pokemon_abilities.csv", newline="", encoding="utf-8") as archivo_csv:
+        habilidades_reader = csv.DictReader(archivo_csv)
+        pokemon_habilidades_aux = {}
+        for fila in habilidades_reader:
+            pokemon_id = int(fila["pokemon_id"])
+            habilidad_id = fila["ability_id"]
+            if pokemon_id not in pokemon_habilidades_aux:
+                pokemon_habilidades_aux[pokemon_id] = []
+            pokemon_habilidades_aux[pokemon_id].append(habilidad_id)
+
+    with open("ability_names.csv", newline="", encoding="utf-8") as archivo_csv:
+        ability_name_reader = csv.DictReader(archivo_csv)
+        for fila in ability_name_reader:
+            if fila["local_language_id"] == "7":
+                for pokemon_id, habilidades_ids in pokemon_habilidades_aux.items():
+                    if fila["ability_id"] in habilidades_ids:
+                        for elem in pokemons:
+                            if elem.pokemon_id == pokemon_id:
+                                elem.habilidades.append(fila["name"])
+
+    with open("pokemon_stats.csv", newline="", encoding="utf-8") as archivo_csv:
+        estadisticas_reader = csv.DictReader(archivo_csv)
+        for fila in estadisticas_reader:
+            pokemon_id = int(fila["pokemon_id"])
+            stat_id = fila["stat_id"]
+            base_stat = int(fila["base_stat"])
+            for elem in pokemons:
+                if elem.pokemon_id == pokemon_id:
+                    if stat_id == "1":
+                        elem.estadisticas["hp"] = base_stat
+                    elif stat_id == "2":
+                        elem.estadisticas["attack"] = base_stat
+                    elif stat_id == "3":
+                        elem.estadisticas["defense"] = base_stat
+                    elif stat_id == "4":
+                        elem.estadisticas["special-attack"] = base_stat
+                    elif stat_id == "5":
+                        elem.estadisticas["special-defense"] = base_stat
+                    elif stat_id == "6":
+                        elem.estadisticas["speed"] = base_stat
+                    elif stat_id == "7":
+                        elem.estadisticas["accuracy"] = base_stat
+                    elif stat_id == "8":
+                        elem.estadisticas["evasion"] = base_stat
+
+
+cargar_todos_los_pokemon()
 def generar_lista(lista):
     lista_contenido_limitado = []
     for elem in lista:
         lista_contenido_limitado.append({"id": elem.pokemon_id, "nombre": elem.nombre, "imagen": elem.imagen, "tipos": elem.tipos})
     return lista_contenido_limitado
-
-
-
-
-# apartir de este punto implementar los endpoints
 @router.get("/")
 def get_pokemon() -> list:
     return generar_lista(pokemons)
 @router.post("/", status_code=status.HTTP_201_CREATED)
 def crear_pokemon(pokemon: Pokemon) -> Pokemon:
     for a in pokemons:
-        if a.id == pokemon.id:
+        if a.pokemon_id == pokemon.pokemon_id:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Ya existe un pokemon con ese id",
@@ -172,3 +155,14 @@ def crear_pokemon(pokemon: Pokemon) -> Pokemon:
     pokemons.append(pokemon)
     return pokemon
 
+
+@router.delete("/{id}")
+def borrar_pokemon(id: int):
+    for a in pokemons:
+        if a["pokemon_id"] == id:
+            pokemons.remove(a)
+            return
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail="No se encontro ese id en nuestros pokemons",
+    )
