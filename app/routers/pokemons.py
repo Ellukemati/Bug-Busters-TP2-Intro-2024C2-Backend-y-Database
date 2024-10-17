@@ -134,7 +134,7 @@ def cargar_todos_los_pokemon():
                     elif stat_id == "8":
                         elem.estadisticas["evasion"] = base_stat
 
-
+lista_contenido_limitado = []
 cargar_todos_los_pokemon()
 def generar_lista(lista):
     lista_contenido_limitado = []
