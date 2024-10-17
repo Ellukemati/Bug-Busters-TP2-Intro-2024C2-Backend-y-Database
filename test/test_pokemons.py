@@ -5,6 +5,8 @@ from app.routers.pokemons import pokemons
 
 client = TestClient(app)
 def test_get_pokemons():
-    respuesta = client.get("/pokemon/")
+    respuesta = client.get("/pokemons/")
     contenido = respuesta.json()
     assert respuesta.status_code == 200
+    assert contenido[0]["id"] == 1
+
