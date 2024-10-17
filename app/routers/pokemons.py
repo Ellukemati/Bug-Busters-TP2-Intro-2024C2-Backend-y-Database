@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 from fastapi import APIRouter, HTTPException, status
 import csv
@@ -144,6 +145,68 @@ def generar_lista(lista):
 @router.get("/")
 def get_pokemon() -> list:
     return generar_lista(pokemons)
+=======
+# incluyan clases de lo que haga falta
+from models import Pokemon
+from fastapi import APIRouter, HTTPException, status
+import csv
+
+
+router = APIRouter()
+# generacion de lista, podria ser movida a otro py
+pokemons: list[Pokemon] = []
+with open ("pokemon.csv", newline="") as archivo:# para que se ejecute bien el api,los csv tienen que estar en el mismo directorio que main.py
+    lista_pokemon = csv.DictReader(archivo)
+    imagen = (
+        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/<id>.png"
+    )
+    for elem in lista_pokemon:
+        monstruo = {"tipo": ""}
+        with open ("pokemon_types.csv", newline="") as archivos_tipos:
+            pokemon_tipo = csv.DictReader(archivos_tipos)
+            tps = [-1, -1]
+            posicion = 0
+            for fila in pokemon_tipo:
+                if fila["pokemon_id"] == elem["id"]:
+                    tps[posicion] = fila["type_id"]
+                    posicion = posicion + 1
+            if tps[1] == -1:
+                del tps[1]
+        with open ("type_names.csv", newline="") as tipos_nombres:
+            lista_tipos = csv.DictReader(tipos_nombres)
+            for fila in lista_tipos:
+                if fila["local_language_id"] == "7":
+                    posicion = 0
+                    for i in tps:
+                        if i == fila["type_id"]:
+                            tipo = fila["name"]
+                            tipo = tipo.replace("\n", "")
+                            tps[posicion] = tipo
+                        posicion = posicion + 1
+        if len(tps) == 2:
+            monstruo["tipo"] = tps[0] + "," + tps[1]
+        else:
+            monstruo["tipo"] = tps[0]
+        pokemons.append(
+            Pokemon(
+                id=elem["id"],
+                nombre=elem["identifier"],
+                imagen=imagen.replace("<id>", elem["id"]),
+                tipo=monstruo["tipo"],
+            )
+        )
+
+ 
+
+
+
+
+
+# apartir de este punto implementar los endpoints
+@router.get("/pokemon/")
+def get_pokemon() -> list[Pokemon]:
+    return pokemons
+>>>>>>> 842bc241994044722a55a0fe417bf7d360b12c88
 @router.post("/", status_code=status.HTTP_201_CREATED)
 def crear_pokemon(pokemon: Pokemon) -> Pokemon:
     for a in pokemons:
@@ -155,6 +218,7 @@ def crear_pokemon(pokemon: Pokemon) -> Pokemon:
     pokemons.append(pokemon)
     return pokemon
 
+<<<<<<< HEAD
 
 @router.delete("/{id}")
 def borrar_pokemon(id: int):
@@ -166,3 +230,5 @@ def borrar_pokemon(id: int):
         status_code=status.HTTP_404_NOT_FOUND,
         detail="No se encontro ese id en nuestros pokemons",
     )
+=======
+>>>>>>> 842bc241994044722a55a0fe417bf7d360b12c88
