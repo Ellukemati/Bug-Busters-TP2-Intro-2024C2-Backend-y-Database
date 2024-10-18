@@ -1,19 +1,7 @@
 
 from fastapi import APIRouter, HTTPException, status
 import csv
-from pydantic import BaseModel
-
-
-class Pokemon(BaseModel):
-    pokemon_id: int
-    nombre: str
-    imagen: str
-    tipos: list[str]
-    habilidades: list[str]
-    altura: int
-    peso: int
-    estadisticas: dict[str, int]
-    cadena_evolutiva: list[int]
+from models import Pokemon
 router = APIRouter()
 
 pokemons: list[Pokemon] = []
@@ -77,8 +65,6 @@ def cargar_todos_los_pokemon():
                 cadena_evolutiva=cadena_evolutiva,
             )
             pokemons.append(pokemon)
-    for pokemon in pokemons:
-        print(f"{pokemon.nombre}: {pokemon.cadena_evolutiva}")
 
     with open("pokemon_types.csv", newline="", encoding="utf-8") as archivo_csv:
         tipo_reader = csv.DictReader(archivo_csv)
@@ -96,7 +82,9 @@ def cargar_todos_los_pokemon():
             if fila["local_language_id"] == "7":
                 for pokemon_id, tipos_ids in pokemon_tipos_aux.items():
                     if fila["type_id"] in tipos_ids:
-                        pokemons[pokemon_id].tipos.append(fila["name"])
+                        for elem in pokemons:
+                            if elem.pokemon_id == pokemon_id:
+                                elem.tipos.append(fila["name"])
 
     with open("pokemon_abilities.csv", newline="", encoding="utf-8") as archivo_csv:
         habilidades_reader = csv.DictReader(archivo_csv)
@@ -114,7 +102,9 @@ def cargar_todos_los_pokemon():
             if fila["local_language_id"] == "7":
                 for pokemon_id, habilidades_ids in pokemon_habilidades_aux.items():
                     if fila["ability_id"] in habilidades_ids:
-                        pokemons[pokemon_id].habilidades.append(fila["name"])
+                        for elem in pokemons:
+                            if elem.pokemon_id == pokemon_id:
+                                elem.habilidades.append(fila["name"])
 
     with open("pokemon_stats.csv", newline="", encoding="utf-8") as archivo_csv:
         estadisticas_reader = csv.DictReader(archivo_csv)
@@ -122,27 +112,38 @@ def cargar_todos_los_pokemon():
             pokemon_id = int(fila["pokemon_id"])
             stat_id = fila["stat_id"]
             base_stat = int(fila["base_stat"])
-            pokemon = pokemons[pokemon_id]
-            if stat_id == "1":
-                pokemon.estadisticas["hp"] = base_stat
-            elif stat_id == "2":
-                pokemon.estadisticas["attack"] = base_stat
-            elif stat_id == "3":
-                pokemon.estadisticas["defense"] = base_stat
-            elif stat_id == "4":
-                pokemon.estadisticas["special-attack"] = base_stat
-            elif stat_id == "5":
-                pokemon.estadisticas["special-defense"] = base_stat
-            elif stat_id == "6":
-                pokemon.estadisticas["speed"] = base_stat
-            elif stat_id == "7":
-                pokemon.estadisticas["accuracy"] = base_stat
-            elif stat_id == "8":
-                pokemon.estadisticas["evasion"] = base_stat
+            for elem in pokemons:
+                if elem.pokemon_id == pokemon_id:
+                    if stat_id == "1":
+                        elem.estadisticas["hp"] = base_stat
+                    elif stat_id == "2":
+                        elem.estadisticas["attack"] = base_stat
+                    elif stat_id == "3":
+                        elem.estadisticas["defense"] = base_stat
+                    elif stat_id == "4":
+                        elem.estadisticas["special-attack"] = base_stat
+                    elif stat_id == "5":
+                        elem.estadisticas["special-defense"] = base_stat
+                    elif stat_id == "6":
+                        elem.estadisticas["speed"] = base_stat
+                    elif stat_id == "7":
+                        elem.estadisticas["accuracy"] = base_stat
+                    elif stat_id == "8":
+                        elem.estadisticas["evasion"] = base_stat
 
-
+lista_contenido_limitado: list[dict] = []
 cargar_todos_los_pokemon()
-
+def generar_lista(lista):
+    lista_contenido_limitado.clear()
+    for elem in lista:
+        lista_contenido_limitado.append({"id": elem.pokemon_id, "nombre": elem.nombre, "imagen": elem.imagen, "tipos": elem.tipos})
+    return lista_contenido_limitado
+def get_pokemon_para_test() -> list:#{
+    return generar_lista(pokemons)#para asegurar funcionalidad del test get moves/id/pokemon
+get_pokemon_para_test()#}
+@router.get("/")
+def get_pokemon() -> list:
+    return generar_lista(pokemons)
 @router.post("/", status_code=status.HTTP_201_CREATED)
 def crear_pokemon(pokemon: Pokemon) -> Pokemon:
     for a in pokemons:
