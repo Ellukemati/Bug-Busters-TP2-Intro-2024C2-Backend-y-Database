@@ -25,29 +25,34 @@ def crear_pokemon(pokemon: Pokemon) -> Pokemon:
 Naturalezas: list[Naturaleza] = []
 estadisticas = {}
 
-with open("stats.csv", mode="r") as estadisticas_file:
-    reader = csv.DictReader(estadisticas_file)
-    for row in reader:
-        estadisticas[row["id"]] = row["identifier"]
 
-with open("natures.csv", mode="r") as naturalezas_file:
-    reader = csv.DictReader(naturalezas_file)
+def list_natures():
+    with open("stats.csv", mode="r") as estadisticas_file:
+        reader = csv.DictReader(estadisticas_file)
+        for row in reader:
+            estadisticas[row["id"]] = row["identifier"]
 
-    for row in reader:
-        id_aumenta = row["increased_stat_id"]
-        id_disminuye = row["decreased_stat_id"]
+    with open("natures.csv", mode="r") as naturalezas_file:
+        reader = csv.DictReader(naturalezas_file)
 
-        nombre_aumenta = estadisticas.get(id_aumenta)
-        nombre_disminuye = estadisticas.get(id_disminuye)
+        for row in reader:
+            id_aumenta = row["increased_stat_id"]
+            id_disminuye = row["decreased_stat_id"]
 
-        naturaleza = Naturaleza(
-            id=int(row["id"]),
-            nombre=row["identifier"],
-            aumenta_estadistica=nombre_aumenta,
-            reduce_estadistica=nombre_disminuye,
-        )
+            nombre_aumenta = estadisticas.get(id_aumenta)
+            nombre_disminuye = estadisticas.get(id_disminuye)
 
-        Naturalezas.append(naturaleza)
+            naturaleza = Naturaleza(
+                id=int(row["id"]),
+                nombre=row["identifier"],
+                aumenta_estadistica=nombre_aumenta,
+                reduce_estadistica=nombre_disminuye,
+            )
+
+            Naturalezas.append(naturaleza)
+
+
+list_natures()
 
 
 @router.get("/natures")
