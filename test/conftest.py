@@ -1,5 +1,5 @@
-from fastapi.testclient import TestClient
 from collections.abc import Generator
+from fastapi.testclient import TestClient
 from main import app
 import pytest
 

@@ -146,3 +146,27 @@ def get_pokemon_by_id(id: int):
         if pokemon.pokemon_id == id:
             return pokemon
     raise HTTPException(status_code=404, detail="Pokémon no encontrado.")
+
+
+@router.post("/", status_code=status.HTTP_201_CREATED)
+def crear_pokemon(pokemon: Pokemon) -> Pokemon:
+    for a in POKEMON_DATA:
+        if a.pokemon_id == pokemon.pokemon_id:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Ya existe un pokemon con ese id",
+            )
+    POKEMON_DATA.append(pokemon)
+    return pokemon
+
+
+@router.delete("/{id}")
+def borrar_pokemon(id: int):
+    for a in POKEMON_DATA:
+        if a["pokemon_id"] == id:
+            POKEMON_DATA.remove(a)
+            return
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail="No se encontro ese id en nuestros pokemons",
+    )
