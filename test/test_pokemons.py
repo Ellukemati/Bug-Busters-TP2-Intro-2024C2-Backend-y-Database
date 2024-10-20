@@ -51,7 +51,6 @@ def test_crear_pokemon():
 
 def test_crear_pokemon_con_id_existente():
     POKEMON_DATA.clear()
-
     POKEMON_DATA.append(infernape_mock)
     response = client.post("/pokemons", json=infernape_mock)
 

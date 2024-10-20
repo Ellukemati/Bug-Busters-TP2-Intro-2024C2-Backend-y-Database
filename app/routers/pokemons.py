@@ -151,7 +151,8 @@ def get_pokemon_by_id(id: int):
 @router.post("/", status_code=status.HTTP_201_CREATED)
 def crear_pokemon(pokemon: Pokemon) -> Pokemon:
     for a in POKEMON_DATA:
-        if a["pokemon_id"] == pokemon.pokemon_id:
+        pokemon_id = a.get("pokemon_id") if isinstance(a, dict) else a.pokemon_id
+        if pokemon_id == pokemon.pokemon_id:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Ya existe un pokemon con ese id",
