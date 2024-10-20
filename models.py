@@ -13,6 +13,7 @@ class Pokemon(BaseModel):
     cadena_evolutiva: list[int]
 
 
+
 class Naturaleza(BaseModel):
     id: int
     nombre: str
@@ -24,8 +25,8 @@ class Movimiento(BaseModel):
     id: int
     nombre: str
     tipo: str
-    power: int
-    accuracy: int
+    power: int | None = None
+    accuracy: int | None = None
     pp: int
     generacion: str
     categoria: str
@@ -44,3 +45,8 @@ class Equipo(BaseModel):
     id_equipo: int
     nombre: str
     pokemons_de_equipo: list[Integrante_pokemon]
+
+
+class Error(BaseModel):
+    detail: str
+
