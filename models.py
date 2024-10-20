@@ -46,7 +46,5 @@ class Equipo(BaseModel):
     nombre: str
     pokemons_de_equipo: list[Integrante_pokemon]
 
-
 class Error(BaseModel):
     detail: str
-
