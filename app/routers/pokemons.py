@@ -13,7 +13,8 @@ POKEMON_ABILITIES_CSV = "pokemon_abilities.csv"
 ABILITY_NAMES_CSV = "ability_names.csv"
 POKEMON_EVOLUTIONS_CSV = "pokemon_evolutions.csv"
 
-POKEMON_DATA = []  # Lista "Base de datos", con todos los Pokémon.
+POKEMON_DATA: list[Pokemon] = []  # Lista "Base de datos", con todos los Pokémon.
+
 
 def cargar_todos_los_pokemon():
     evoluciones = {}
@@ -103,7 +104,9 @@ def cargar_todos_los_pokemon():
         for fila in ability_name_reader:
             if fila["local_language_id"] == "7":
                 for pokemon in POKEMON_DATA:
-                    if fila["ability_id"] in pokemon_habilidades_aux.get(pokemon.pokemon_id, []):
+                    if fila["ability_id"] in pokemon_habilidades_aux.get(
+                        pokemon.pokemon_id, []
+                    ):
                         pokemon.habilidades.append(fila["name"])
 
     with open(POKEMON_STATS_CSV, newline="", encoding="utf-8") as archivo_csv:
@@ -112,7 +115,9 @@ def cargar_todos_los_pokemon():
             pokemon_id = int(fila["pokemon_id"])
             stat_id = fila["stat_id"]
             base_stat = int(fila["base_stat"])
-            pokemon = next((p for p in POKEMON_DATA if p.pokemon_id == pokemon_id), None)
+            pokemon = next(
+                (p for p in POKEMON_DATA if p.pokemon_id == pokemon_id), None
+            )
             if pokemon:
                 if stat_id == "1":
                     pokemon.estadisticas["hp"] = base_stat
@@ -131,11 +136,13 @@ def cargar_todos_los_pokemon():
                 elif stat_id == "8":
                     pokemon.estadisticas["evasion"] = base_stat
 
+
 cargar_todos_los_pokemon()
+
 
 @router.get("/{id}", response_model=Pokemon)
 def get_pokemon_by_id(id: int):
     for pokemon in POKEMON_DATA:
-        if pokemon.pokemon_id == pokemon_id:
+        if pokemon.pokemon_id == id:
             return pokemon
     raise HTTPException(status_code=404, detail="Pokémon no encontrado.")
