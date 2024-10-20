@@ -12,14 +12,11 @@ class Pokemon(BaseModel):
     estadisticas: dict[str, int]
     cadena_evolutiva: list[int]
 
-
-
 class Naturaleza(BaseModel):
     id: int
     nombre: str
     aumenta_estadistica: str
     reduce_estadistica: str
-
 
 class Movimiento(BaseModel):
     id: int
