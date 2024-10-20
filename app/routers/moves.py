@@ -2,11 +2,17 @@
 from fastapi import APIRouter,  HTTPException, status
 import csv
 from app.routers.pokemons import lista_contenido_limitado
-from models import Pokemon, Movimiento
+from models import Pokemon, Movimiento, Error
 
 
 router = APIRouter()
 
+MOVES_CSV = "moves.csv"
+MOVES_DAMAGE_CSV = "move_damage_class.csv"
+MOVE_EFFECT_CSV = "move_effect.csv"
+TYPE_NAMES = "type_names.csv"
+ESPANIOL = 7
+INGLES = 9
 
 
 # generacion de lista, podria ser movida a otro py
@@ -40,48 +46,49 @@ def encontrar_pokemones_por_id_mov(ID):
                             if lista_final[len(lista_final) - 1]["id"] != item["id"]:
                                 lista_final.append(({"id": item["id"], "nombre": item["nombre"], "imagen": item["imagen"], "tipos": item["tipos"]}))
     return (lista_final)
-@router.get("/")
-def get_movements():
-    return {"Hello": "World"}
+def buscar_movimiento(id):
+
+    with open(MOVES_CSV, "r") as moves:
+        datos_csv = csv.DictReader(moves)
+        for row in datos_csv:
+            if int(row["id"]) == id:
+                return Movimiento(
+                    id=int(row["id"]),
+                    nombre=row["identifier"],
+                    tipo=buscar_por_id(row["type_id"], "name", ESPANIOL, TYPE_NAMES),
+                    power=(
+                        int(row["power"]) if row["power"].strip() else None
+                    ),  # comprueba que la casilla no esta vacia
+                    accuracy=int(row["accuracy"]) if row["accuracy"].strip() else None,
+                    pp=int(row["pp"]),
+                    generacion=f"Generation {row['generation_id']}",
+                    categoria=buscar_por_id(
+                        row["damage_class_id"], "name", ESPANIOL, MOVES_DAMAGE_CSV
+                    ),
+                    efecto=buscar_por_id(
+                        row["effect_id"],
+                        "short_effect",
+                        INGLES,
+                        MOVE_EFFECT_CSV,
+                    ),
+                    probabilidad_efecto=(
+                        row["effect_chance"] if row["effect_chance"].strip() else None
+                    ),
+                )
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Movement not found"
+        )
+
+
+def buscar_por_id(id, nombre_columna, id_idioma, ruta_archivo):
+    with open(ruta_archivo, "r") as entrada:
+        datos_csv = csv.DictReader(entrada)
+        encabezado = datos_csv.fieldnames  # para ver la primera columna
+        for row in datos_csv:
+            if row[encabezado[0]] == id and int(row["local_language_id"]) == id_idioma:
+                return row[nombre_columna]
 
 
 @router.get("/{id}", responses={status.HTTP_404_NOT_FOUND: {"model": Error}})
 def show(id: int) -> Movimiento:
     return buscar_movimiento(id)
-
-
-def buscar_movimiento(id):
-    movimiento = Movimiento()
-
-    with open("../archivos/moves.csv", "r") as moves:
-        datos_csv = csv.reader(moves)
-        for row in datos_csv:
-            if row["id"] == id:
-                movimiento.id = row["id"]
-                movimiento.nombre = row["identifier"]
-                movimiento.tipo = buscar_por_id(row["type_id"])
-                movimiento.power = row["power"]
-                movimiento.accuracy = row["accuracy"]
-                movimiento.pp = row["pp"]
-                movimiento.generacion = f"Generation {row['generation_id']}"
-                movimiento.categoria = buscar_por_id(
-                    row["damage_class_id"], "name", "archivos/move_damage_prose.csv"
-                )
-                movimiento.efecto = buscar_por_id(
-                    row["effect_id"],
-                    "short_effect",
-                    "archivos/conquest_move_effect_prose.csv",
-                )
-            else:
-                raise HTTPException(
-                    status_code=status.HTTP_404_NOT_FOUND, detail="Movement not found"
-                )
-    return movimiento
-
-
-def buscar_por_id(id, nombre_columna, ruta_archivo):
-    with open(ruta_archivo, "r") as entrada:
-        datos_csv = csv.reader(entrada)
-        for row in datos_csv:
-            if row[0] == id and row["local_language_id"] == 9:
-                return row[nombre_columna]
