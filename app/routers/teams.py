@@ -3,6 +3,7 @@ from fastapi import APIRouter, HTTPException, status
 from models import Movimiento, Pokemon, Integrante_pokemon, Equipo, Naturaleza
 
 
+
 router = APIRouter()
 
 teams: list[Equipo] = []
