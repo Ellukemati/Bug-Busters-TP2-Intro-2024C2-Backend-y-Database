@@ -658,3 +658,23 @@ equipo = {
         },
     ],
 }
+infernape_mock = {
+        "pokemon_id": 392,
+        "nombre": "infernape",
+        "imagen": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/392.png",
+        "tipos": ["Lucha", "Fuego"],
+        "habilidades": ["Mar Llamas", "Puño Férreo"],
+        "altura": 12,
+        "peso": 550,
+        "estadisticas": {
+            "hp": 76,
+            "attack": 104,
+            "defense": 71,
+            "special-attack": 104,
+            "special-defense": 71,
+            "speed": 108,
+            "accuracy": 0,
+            "evasion": 0,
+        },
+        "cadena_evolutiva": [390, 391, 392],
+    }

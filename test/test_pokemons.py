@@ -1,6 +1,7 @@
 from fastapi.testclient import TestClient
-from app.routers.pokemons import pokemons
+from app.routers.pokemons import POKEMON_DATA
 from models import Pokemon
+from test.jsons import infernape_mock
 from main import app
 import pytest
 
@@ -8,32 +9,8 @@ import pytest
 client = TestClient(app)
 
 
-@pytest.fixture
-def client() -> TestClient:
-    return TestClient(app)
-
-
 def test_get_pokemon_encontrado(client):
-    infernape_mock = {
-        "pokemon_id": 392,
-        "nombre": "infernape",
-        "imagen": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/392.png",
-        "tipos": ["Lucha", "Fuego"],
-        "habilidades": ["Mar Llamas", "Puño Férreo"],
-        "altura": 12,
-        "peso": 550,
-        "estadisticas": {
-            "hp": 76,
-            "attack": 104,
-            "defense": 71,
-            "special-attack": 104,
-            "special-defense": 71,
-            "speed": 108,
-            "accuracy": 0,
-            "evasion": 0,
-        },
-        "cadena_evolutiva": [390, 391, 392],
-    }
+
     response = client.get("/pokemons/392")
 
     assert response.status_code == 200
@@ -48,89 +25,35 @@ def test_get_pokemon_no_encontrado(client):
 
 
 def test_borrar_un_pokemon():
-    pokemon_existente = {
-        "pokemon_id": 392,
-        "nombre": "infernape",
-        "imagen": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/392.png",
-        "tipos": ["Fuego", "Lucha"],
-        "habilidades": ["Mar Llamas", "Puño Férreo"],
-        "altura": 12,
-        "peso": 550,
-        "estadisticas": {
-            "hp": 76,
-            "attack": 104,
-            "defense": 71,
-            "special-attack": 104,
-            "special-defense": 71,
-            "speed": 108,
-            "accuracy": 100,
-            "evasion": 100,
-        },
-        "cadena_evolutiva": [390, 391, 392],
-    }
+    POKEMON_DATA.clear()
 
-    pokemons.append(pokemon_existente)
+    POKEMON_DATA.append(infernape_mock)
     response = client.delete("pokemons/392")
 
     assert response.status_code == 200
 
 
 def test_borrar_pokemon_no_existe():
+    POKEMON_DATA.clear()
     response = client.delete("/pokemons/10")
     assert response.status_code == 404
     assert response.json()["detail"] == "No se encontro ese id en nuestros pokemons"
 
 
 def test_crear_pokemon():
-    nuevo_pokemon = {
-        "pokemon_id": 392,
-        "nombre": "infernape",
-        "imagen": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/392.png",
-        "tipos": ["Fuego", "Lucha"],
-        "habilidades": ["Mar Llamas", "Puño Férreo"],
-        "altura": 12,
-        "peso": 550,
-        "estadisticas": {
-            "hp": 76,
-            "attack": 104,
-            "defense": 71,
-            "special-attack": 104,
-            "special-defense": 71,
-            "speed": 108,
-            "accuracy": 100,
-            "evasion": 100,
-        },
-        "cadena_evolutiva": [390, 391, 392],
-    }
-    response = client.post("/pokemons", json=nuevo_pokemon)
+    POKEMON_DATA.clear()
+
+    response = client.post("/pokemons", json=infernape_mock)
 
     assert response.status_code == 201
-    assert response.json() == nuevo_pokemon
+    assert response.json() == infernape_mock
 
 
 def test_crear_pokemon_con_id_existente():
-    pokemon_existente = {
-        "pokemon_id": 392,
-        "nombre": "infernape",
-        "imagen": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/392.png",
-        "tipos": ["Fuego", "Lucha"],
-        "habilidades": ["Mar Llamas", "Puño Férreo"],
-        "altura": 12,
-        "peso": 550,
-        "estadisticas": {
-            "hp": 76,
-            "attack": 104,
-            "defense": 71,
-            "special-attack": 104,
-            "special-defense": 71,
-            "speed": 108,
-            "accuracy": 100,
-            "evasion": 100,
-        },
-        "cadena_evolutiva": [390, 391, 392],
-    }
-    pokemons.append(pokemon_existente)
-    response = client.post("/pokemons", json=pokemon_existente)
+    POKEMON_DATA.clear()
+
+    POKEMON_DATA.append(infernape_mock)
+    response = client.post("/pokemons", json=infernape_mock)
 
     assert response.status_code == 400
     assert response.json()["detail"] == "Ya existe un pokemon con ese id"
