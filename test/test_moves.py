@@ -10,12 +10,12 @@ def test_obtener_movimiento_existente():
     movimiento_existente: Movimiento = {
         "id": 190,
         "nombre": "octazooka",
-        "tipo": "Water",
+        "tipo": "Agua",
         "power": 65,
         "accuracy": 85,
         "pp": 10,
         "generacion": "Generation 2",
-        "categoria": "special",
+        "categoria": "especial",
         "efecto": "Has a $effect_chance% chance to lower the target's accuracy by one stage.",
         "probabilidad_efecto": 50,
     }
@@ -40,7 +40,7 @@ def test_obtener_movimiento_existente_con_casillas_vacias():
         "accuracy": None,
         "pp": 20,
         "generacion": "Generation 1",
-        "categoria": "status",
+        "categoria": "estado",
         "efecto": "Immediately ends wild battles.  Forces trainers to switch Pokémon.",
         "probabilidad_efecto": None,
     }

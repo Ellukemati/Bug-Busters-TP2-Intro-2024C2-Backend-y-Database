@@ -8,6 +8,8 @@ MOVES_CSV = "moves.csv"
 MOVES_DAMAGE_CSV = "move_damage_class.csv"
 MOVE_EFFECT_CSV = "move_effect.csv"
 TYPE_NAMES = "type_names.csv"
+ESPANIOL = 7
+INGLES = 9
 
 
 def buscar_movimiento(id):
@@ -19,7 +21,7 @@ def buscar_movimiento(id):
                 return Movimiento(
                     id=int(row["id"]),
                     nombre=row["identifier"],
-                    tipo=buscar_por_id(row["type_id"], "name", TYPE_NAMES),
+                    tipo=buscar_por_id(row["type_id"], "name", ESPANIOL, TYPE_NAMES),
                     power=(
                         int(row["power"]) if row["power"].strip() else None
                     ),  # comprueba que la casilla no esta vacia
@@ -27,11 +29,12 @@ def buscar_movimiento(id):
                     pp=int(row["pp"]),
                     generacion=f"Generation {row['generation_id']}",
                     categoria=buscar_por_id(
-                        row["damage_class_id"], "name", MOVES_DAMAGE_CSV
+                        row["damage_class_id"], "name", ESPANIOL, MOVES_DAMAGE_CSV
                     ),
                     efecto=buscar_por_id(
                         row["effect_id"],
                         "short_effect",
+                        INGLES,
                         MOVE_EFFECT_CSV,
                     ),
                     probabilidad_efecto=(
@@ -43,14 +46,12 @@ def buscar_movimiento(id):
         )
 
 
-def buscar_por_id(id, nombre_columna, ruta_archivo):
+def buscar_por_id(id, nombre_columna, id_idioma, ruta_archivo):
     with open(ruta_archivo, "r") as entrada:
         datos_csv = csv.DictReader(entrada)
         encabezado = datos_csv.fieldnames  # para ver la primera columna
         for row in datos_csv:
-            if (
-                row[encabezado[0]] == id and int(row["local_language_id"]) == 9
-            ):  # elegi el ingles como idioma predeterminado
+            if row[encabezado[0]] == id and int(row["local_language_id"]) == id_idioma:
                 return row[nombre_columna]
 
 
