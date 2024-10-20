@@ -22,8 +22,8 @@ class Movimiento(BaseModel):
     id: int
     nombre: str
     tipo: str
-    power: int
-    accuracy: int
+    power: int | None = None
+    accuracy: int | None = None
     pp: int
     generacion: str
     categoria: str
@@ -43,3 +43,5 @@ class Equipo(BaseModel):
     nombre: str
     pokemons_de_equipo: list[Integrante_pokemon]
 
+class Error(BaseModel):
+    detail: str

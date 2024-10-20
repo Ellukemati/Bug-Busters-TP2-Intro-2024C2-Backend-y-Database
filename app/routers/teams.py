@@ -3,6 +3,7 @@ from fastapi import APIRouter, HTTPException, status
 from models import Movimiento, Pokemon, Integrante_pokemon, Equipo, Naturaleza
 
 
+
 router = APIRouter()
 
 teams: list[Equipo] = []
@@ -27,6 +28,20 @@ def post_team(team: Equipo) -> list[Equipo]:
     return teams
 
 
+
+@router.get("/")
+def get_teams() -> list[Equipo]:
+    return teams
+
+
+@router.get("/{id}")
+def show_id_team(id: int) -> Equipo:
+    for equipo in teams:
+        if equipo["id_equipo"] == id:
+            return equipo
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND, detail="No se encontro el equipo"
+    )
 @router.delete("/{id}")
 def borrar_equipo(id: int) -> Equipo:
     for equipo in teams:
@@ -39,6 +54,4 @@ def borrar_equipo(id: int) -> Equipo:
     )
 
 
-@router.get("/")
-def get_teams() -> list[Equipo]:
-    return teams
+
