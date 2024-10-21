@@ -1,6 +1,7 @@
 # incluyan clases de lo que haga falta
 from fastapi import APIRouter, HTTPException, status
 from models import Movimiento, Pokemon, Integrante_pokemon, Equipo, Naturaleza
+
 import csv
 
 
@@ -85,7 +86,6 @@ def borrar_equipo(id: int) -> Equipo:
         detail="No se encontro un equipo con ese id",
     )
 
-
 @router.put("/")
 def update(equipo_actualizado: Equipo) -> Equipo:
     for indice, equipo_existente in enumerate(teams):
@@ -101,3 +101,4 @@ def update(equipo_actualizado: Equipo) -> Equipo:
         status_code=status.HTTP_404_NOT_FOUND,
         detail="No se encontro un equipo con ese id",
     )
+

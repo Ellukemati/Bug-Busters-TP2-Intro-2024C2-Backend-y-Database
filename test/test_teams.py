@@ -1,4 +1,4 @@
-from test.jsons import (
+from jsons import (
     equipo_con_6_pokemons,
     equipo_mismo_id,
     equipo_siete_pokemons,
@@ -13,7 +13,6 @@ from models import Equipo
 from main import app
 from app.routers.teams import Naturalezas
 
-
 client = TestClient(app)
 
 
@@ -22,7 +21,9 @@ def test_get_natures():
     Naturalezas.append(nature_1)
     Naturalezas.append(nature_2)
     Naturalezas.append(nature_3)
+
     response = client.get("teams/natures")
+
     assert response.status_code == 200
 
     data = response.json()

@@ -2,9 +2,9 @@ from fastapi.testclient import TestClient
 from models import Pokemon, Naturaleza
 from main import app
 from app.routers.pokemons import POKEMON_DATA
-from test.jsons import infernape_mock
-import pytest
 
+from jsons import nature_1, nature_2, nature_3, infernape_mock
+import pytest
 
 client = TestClient(app)
 
