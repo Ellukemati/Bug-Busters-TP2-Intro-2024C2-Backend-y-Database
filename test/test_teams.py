@@ -8,7 +8,7 @@ from jsons import (
     nature_3,
 )
 from fastapi.testclient import TestClient
-from app.routers.teams import teams
+from app.routers.teams import teams, Naturalezas
 from models import Equipo
 from main import app
 from app.routers.teams import Naturalezas
@@ -23,6 +23,9 @@ def test_get_natures():
     Naturalezas.append(nature_3)
 
     response = client.get("teams/natures")
+
+    response = client.get("teams/natures")
+
 
     assert response.status_code == 200
 

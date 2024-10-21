@@ -9,6 +9,13 @@ import pytest
 client = TestClient(app)
 
 
+def test_get_pokemons():
+    respuesta = client.get("/pokemons/")
+    contenido = respuesta.json()
+    assert respuesta.status_code == 200
+    assert contenido[0]["id"] == 1
+
+    
 def test_get_pokemon_encontrado(client):
 
     response = client.get("/pokemons/392")
