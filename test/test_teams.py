@@ -1,4 +1,4 @@
-from test.jsons import (
+from jsons import (
     equipo_con_6_pokemons,
     equipo_mismo_id,
     equipo_siete_pokemons,

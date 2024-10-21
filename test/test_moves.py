@@ -1,10 +1,14 @@
 # incluyan clases de lo que haga falta
-from fastapi import APIRouter, HTTPException, status
-from models import Movimiento
+from fastapi import APIRouter#,  HTTPException, status
 from main import app
 from app.routers.pokemons import lista_contenido_limitado
 from fastapi.testclient import TestClient
 client = TestClient(app)
+from models import Movimiento
+
+
+
+
 
 
 
@@ -44,6 +48,7 @@ def test_obtener_movimiento_existente():
     movimiento_existente: Movimiento = {
         "id": 190,
         "nombre": "octazooka",
+        "tipo": "Agua",
         "power": 65,
         "accuracy": 85,
         "pp": 10,
