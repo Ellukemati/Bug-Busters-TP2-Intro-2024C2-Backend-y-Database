@@ -131,6 +131,7 @@ def cargar_todos_los_pokemon():
                         elem.estadisticas["evasion"] = base_stat
 
 cargar_todos_los_pokemon()
+lista_contenido_limitado = []
 def generar_lista(lista):
     lista_contenido_limitado.clear()
     for elem in lista:
@@ -147,22 +148,6 @@ def get_pokemon_by_id(id: int):
     raise HTTPException(status_code=404, detail="Pokémon no encontrado.")
 
 
-
-lista_contenido_limitado = []
-
-
-def generar_lista(lista):
-    lista_contenido_limitado = []
-    for elem in lista:
-        lista_contenido_limitado.append(
-            {
-                "id": elem.pokemon_id,
-                "nombre": elem.nombre,
-                "imagen": elem.imagen,
-                "tipos": elem.tipos,
-            }
-        )
-    return lista_contenido_limitado
 
 
 @router.get("/")
@@ -184,10 +169,15 @@ def crear_pokemon(pokemon: Pokemon) -> Pokemon:
 
 @router.delete("/{id}")
 def borrar_pokemon(id: int):
-    for a in POKEMON_DATA:
-        if a["pokemon_id"] == id:
-            POKEMON_DATA.remove(a)
-            return
+    for indice, pokemon_existente in enumerate(POKEMON_DATA):
+        id_pokemon_existente = (
+            pokemon_existente.get("pokemon_id")
+            if isinstance(pokemon_existente, dict)
+            else pokemon_existente.pokemon_id
+        )
+        if id_pokemon_existente == id:
+            POKEMON_DATA.remove(pokemon_existente)
+            return pokemon_existente
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
         detail="No se encontro ese id en nuestros pokemons",

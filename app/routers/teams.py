@@ -67,9 +67,14 @@ def get_teams() -> list[Equipo]:
 
 @router.get("/{id}")
 def show_id_team(id: int) -> Equipo:
-    for equipo in teams:
-        if equipo["id_equipo"] == id:
-            return equipo
+    for indice, equipo_existente in enumerate(teams):
+        id_equipo_existente = (
+            equipo_existente.get("id_equipo")
+            if isinstance(equipo_existente, dict)
+            else equipo_existente.id_equipo
+        )
+        if id_equipo_existente == id:
+            return teams[indice]
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND, detail="No se encontro el equipo"
     )
@@ -77,10 +82,15 @@ def show_id_team(id: int) -> Equipo:
 
 @router.delete("/{id}")
 def borrar_equipo(id: int) -> Equipo:
-    for equipo in teams:
-        if equipo["id_equipo"] == id:
-            teams.remove(equipo)
-            return equipo
+    for indice, equipo_existente in enumerate(teams):
+        id_equipo_existente = (
+            equipo_existente.get("id_equipo")
+            if isinstance(equipo_existente, dict)
+            else equipo_existente.id_equipo
+        )
+        if id_equipo_existente == id:
+            teams.pop(indice)
+            return equipo_existente
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
         detail="No se encontro un equipo con ese id",
