@@ -21,7 +21,9 @@ def test_get_natures():
     Naturalezas.append(nature_1)
     Naturalezas.append(nature_2)
     Naturalezas.append(nature_3)
-    response = client.get("/natures")
+
+    response = client.get("teams/natures")
+
     assert response.status_code == 200
 
     data = response.json()
@@ -99,3 +101,20 @@ def test_buscar_equipo_no_existente():
     response = client.get("/teams/100")
     assert response.status_code == 404
     assert response.json()["detail"] == "No se encontro el equipo"
+
+
+def test_actualizar_equipo_existente():
+    teams.append(equipo_con_6_pokemons)
+    response = client.put("/teams", json=equipo_mismo_id)
+    content = response.json()
+    assert response.status_code == 200
+    assert content["id_equipo"] == equipo_mismo_id["id_equipo"]
+    assert content["nombre"] == equipo_mismo_id["nombre"]
+    teams.clear()
+
+
+def test_actualizar_equipo_no_existente():
+    response = client.put("/teams", json=equipo)
+    assert response.status_code == 404
+    assert response.json()["detail"] == "No se encontro un equipo con ese id"
+
