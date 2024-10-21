@@ -25,11 +25,9 @@ def cargar_todos_los_pokemon():
         for fila in evoluciones_reader:
             pokemon_id = int(fila["id"])
             evolution_id = int(fila["evolution_id"])
-
             if pokemon_id not in evoluciones:
                 evoluciones[pokemon_id] = {"siguientes": [], "anteriores": []}
             evoluciones[pokemon_id]["siguientes"].append(evolution_id)
-
             if evolution_id not in evoluciones:
                 evoluciones[evolution_id] = {"siguientes": [], "anteriores": []}
             evoluciones[evolution_id]["anteriores"].append(pokemon_id)
@@ -39,7 +37,6 @@ def cargar_todos_los_pokemon():
         for fila in pokemon_reader:
             pokemon_id = int(fila["id"])
             imagen_url = f"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{pokemon_id}.png"
-            
             cadena_evolutiva_ids = []
             anteriores = []
             id_actual = pokemon_id
@@ -50,7 +47,6 @@ def cargar_todos_los_pokemon():
             cadena_evolutiva_ids.append(pokemon_id)
             siguientes = evoluciones.get(pokemon_id, {}).get("siguientes", [])
             cadena_evolutiva_ids.extend(siguientes)
-
             pokemon = Pokemon(
                 pokemon_id=pokemon_id,
                 nombre=fila["identifier"],
@@ -141,11 +137,9 @@ def cargar_todos_los_pokemon():
 
     with open(POKEMON_MOVES_CSV, newline="", encoding="utf-8") as archivo_csv:
         movimientos_reader = csv.DictReader(archivo_csv)
-
         for fila in movimientos_reader:
             pokemon_id = int(fila["pokemon_id"])
             move_id = int(fila["move_id"])
-
             for indice_pokemon in range(len(POKEMON_DATA)):
                 if POKEMON_DATA[indice_pokemon].pokemon_id == pokemon_id:
                     movimientos_aux = set(POKEMON_DATA[indice_pokemon].movimientos_ids)
@@ -189,19 +183,15 @@ def obtener_pokemon_por_id(id: int):
 def obtener_movimientos_pokemon(id: int) -> list[Movimiento]:
     movimientos = []
     pokemon = None
-
     for poke in POKEMON_DATA:
         if poke.pokemon_id == id:
             pokemon = poke
             break
-
     if not pokemon:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Pokémon no encontrado.")
-
     for movimiento_id in pokemon.movimientos_ids:
         movimiento = buscar_movimiento(movimiento_id)
         movimientos.append(movimiento)
-
     return movimientos
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
