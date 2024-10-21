@@ -1,6 +1,6 @@
-from fastapi import APIRouter, HTTPException
-from fastapi import status
-from models import Pokemon, Movimiento
+
+from fastapi import APIRouter, HTTPException, status
+from models import Pokemon, Movimiento, Naturaleza
 from app.routers.moves import buscar_movimiento
 import csv
 
@@ -39,7 +39,7 @@ def cargar_todos_los_pokemon():
         for fila in pokemon_reader:
             pokemon_id = int(fila["id"])
             imagen_url = f"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{pokemon_id}.png"
-
+            
             cadena_evolutiva_ids = []
             anteriores = []
             id_actual = pokemon_id
@@ -157,6 +157,26 @@ def cargar_todos_los_pokemon():
                     break
 
 cargar_todos_los_pokemon()
+  
+lista_contenido_limitado = []
+def generar_lista(lista):
+    lista_contenido_limitado.clear()
+    for elem in lista:
+        lista_contenido_limitado.append({"id": elem.pokemon_id, "nombre": elem.nombre, "imagen": elem.imagen, "tipos": elem.tipos})
+    return lista_contenido_limitado
+def get_pokemon_para_test() -> list:#{
+    return generar_lista(POKEMON_DATA)#para asegurar funcionalidad del test get moves/id/pokemon
+get_pokemon_para_test()#}
+@router.get("/{id}", response_model=Pokemon)
+def get_pokemon_by_id(id: int):
+    for pokemon in POKEMON_DATA:
+        if pokemon.pokemon_id == id:
+            return pokemon
+    raise HTTPException(status_code=404, detail="Pokémon no encontrado.")
+
+@router.get("/")
+def get_pokemon() -> list:
+    return generar_lista(POKEMON_DATA)
 
 @router.get("/{id}", response_model=Pokemon)
 def obtener_pokemon_por_id(id: int):
@@ -196,13 +216,17 @@ def crear_pokemon(pokemon: Pokemon) -> Pokemon:
     POKEMON_DATA.append(pokemon)
     return pokemon
 
-
 @router.delete("/{id}")
 def borrar_pokemon(id: int):
-    for a in POKEMON_DATA:
-        if a["pokemon_id"] == id:
-            POKEMON_DATA.remove(a)
-            return
+    for indice, pokemon_existente in enumerate(POKEMON_DATA):
+        id_pokemon_existente = (
+            pokemon_existente.get("pokemon_id")
+            if isinstance(pokemon_existente, dict)
+            else pokemon_existente.pokemon_id
+        )
+        if id_pokemon_existente == id:
+            POKEMON_DATA.remove(pokemon_existente)
+            return pokemon_existente
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
         detail="No se encontro ese id en nuestros pokemons",
