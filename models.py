@@ -1,12 +1,16 @@
 from pydantic import BaseModel
 
-
 class Pokemon(BaseModel):
-    id: int
+    pokemon_id: int
     nombre: str
     imagen: str
-    tipo: str
-
+    tipos: list[str]
+    habilidades: list[str]
+    movimientos_ids: list[int]
+    altura: int
+    peso: int
+    estadisticas: dict[str, int]
+    cadena_evolutiva_ids: list[int]
 
 class Naturaleza(BaseModel):
     id: int
@@ -14,26 +18,23 @@ class Naturaleza(BaseModel):
     aumenta_estadistica: str
     reduce_estadistica: str
 
-
 class Movimiento(BaseModel):
     id: int
     nombre: str
     tipo: str
-    power: int
-    accuracy: int
+    power: int | None = None
+    accuracy: int | None = None
     pp: int
     generacion: str
     categoria: str
     efecto: str
     probabilidad_efecto: int | None = None
 
-
 class Integrante_pokemon(BaseModel):
     id: int
     nombre: str
     naturaleza: Naturaleza
     movimientos: list[Movimiento]
-
 
 class Equipo(BaseModel):
     id_equipo: int
