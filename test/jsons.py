@@ -679,6 +679,7 @@ equipo = {
         },
     ],
 }
+
 # ------------------------ JSONS POKEMONS -----------------------------
 infernape_mock = {
     "pokemon_id": 392,
