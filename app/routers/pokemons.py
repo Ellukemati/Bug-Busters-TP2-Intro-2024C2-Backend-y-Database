@@ -31,7 +31,6 @@ def cargar_todos_los_pokemon():
                 evoluciones[evolution_id] = {"siguientes": [], "anteriores": []}
             evoluciones[evolution_id]["anteriores"].append(pokemon_id)
 
-
     with open(POKEMON_CSV, newline="", encoding="utf-8") as archivo_csv:
         pokemon_reader = csv.DictReader(archivo_csv)
         for fila in pokemon_reader:
@@ -130,7 +129,6 @@ def cargar_todos_los_pokemon():
                         elem.estadisticas["evasion"] = base_stat
 
 
-
 cargar_todos_los_pokemon()
 
 
@@ -141,15 +139,29 @@ def get_pokemon_by_id(id: int):
             return pokemon
     raise HTTPException(status_code=404, detail="Pokémon no encontrado.")
 
+
 lista_contenido_limitado = []
+
+
 def generar_lista(lista):
     lista_contenido_limitado = []
     for elem in lista:
-        lista_contenido_limitado.append({"id": elem.pokemon_id, "nombre": elem.nombre, "imagen": elem.imagen, "tipos": elem.tipos})
+        lista_contenido_limitado.append(
+            {
+                "id": elem.pokemon_id,
+                "nombre": elem.nombre,
+                "imagen": elem.imagen,
+                "tipos": elem.tipos,
+            }
+        )
     return lista_contenido_limitado
+
+
 @router.get("/")
 def get_pokemon() -> list:
-    return generar_lista(pokemons)
+    return generar_lista(POKEMON_DATA)
+
+
 @router.post("/", status_code=status.HTTP_201_CREATED)
 def crear_pokemon(pokemon: Pokemon) -> Pokemon:
     for a in POKEMON_DATA:
