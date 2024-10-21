@@ -165,7 +165,7 @@ def obtener_pokemon_por_id(id: int):
             return pokemon
     raise HTTPException(status_code=404, detail="Pokémon no encontrado.")
 
-@router.get("{id}/moves", response_model=list[Movimiento])
+@router.get("/{id}/moves", response_model=list[Movimiento])
 def obtener_movimientos_pokemon(id: int) -> list[Movimiento]:
     movimientos = []
     pokemon = None
