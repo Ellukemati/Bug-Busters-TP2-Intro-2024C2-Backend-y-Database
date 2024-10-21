@@ -40,3 +40,6 @@ class Equipo(BaseModel):
     id_equipo: int
     nombre: str
     pokemons_de_equipo: list[Integrante_pokemon]
+
+class Error(BaseModel):
+    detail: str
