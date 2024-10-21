@@ -2,7 +2,9 @@ from fastapi.testclient import TestClient
 from models import Pokemon, Naturaleza
 from main import app
 from app.routers.pokemons import POKEMON_DATA
-from test.jsons import infernape_mock
+
+from jsons import nature_1, nature_2, nature_3, infernape_mock
+import pytest
 
 client = TestClient(app)
 
@@ -13,7 +15,7 @@ def test_get_pokemons():
     assert respuesta.status_code == 200
     assert contenido[0]["id"] == 1
 
-
+    
 def test_get_pokemon_encontrado(client):
 
     response = client.get("/pokemons/392")

@@ -4,6 +4,7 @@ import csv
 
 router = APIRouter()
 
+
 POKEMON_CSV = "pokemon.csv"
 POKEMON_STATS_CSV = "pokemon_stats.csv"
 POKEMON_TYPES_CSV = "pokemon_types.csv"
@@ -30,6 +31,7 @@ def cargar_todos_los_pokemon():
             if evolution_id not in evoluciones:
                 evoluciones[evolution_id] = {"siguientes": [], "anteriores": []}
             evoluciones[evolution_id]["anteriores"].append(pokemon_id)
+
 
     with open(POKEMON_CSV, newline="", encoding="utf-8") as archivo_csv:
         pokemon_reader = csv.DictReader(archivo_csv)
@@ -128,16 +130,22 @@ def cargar_todos_los_pokemon():
                     elif stat_id == "8":
                         elem.estadisticas["evasion"] = base_stat
 
-
 cargar_todos_los_pokemon()
-
-
+def generar_lista(lista):
+    lista_contenido_limitado.clear()
+    for elem in lista:
+        lista_contenido_limitado.append({"id": elem.pokemon_id, "nombre": elem.nombre, "imagen": elem.imagen, "tipos": elem.tipos})
+    return lista_contenido_limitado
+def get_pokemon_para_test() -> list:#{
+    return generar_lista(POKEMON_DATA)#para asegurar funcionalidad del test get moves/id/pokemon
+get_pokemon_para_test()#}
 @router.get("/{id}", response_model=Pokemon)
 def get_pokemon_by_id(id: int):
     for pokemon in POKEMON_DATA:
         if pokemon.pokemon_id == id:
             return pokemon
     raise HTTPException(status_code=404, detail="Pokémon no encontrado.")
+
 
 
 lista_contenido_limitado = []
@@ -173,7 +181,6 @@ def crear_pokemon(pokemon: Pokemon) -> Pokemon:
             )
     POKEMON_DATA.append(pokemon)
     return pokemon
-
 
 @router.delete("/{id}")
 def borrar_pokemon(id: int):

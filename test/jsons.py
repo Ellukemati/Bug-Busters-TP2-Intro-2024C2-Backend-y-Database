@@ -1,3 +1,4 @@
+# ---------------------- JSON NATURES ----------------
 nature_1 = {
     "id": 1,
     "nombre": "hardy",
@@ -17,7 +18,7 @@ nature_3 = {
     "aumenta_estadistica": "special-attack",
     "reduce_estadistica": "attack",
 }
-
+# ----------------- JSONS EQUIPOS --------------------------------
 equipo_con_6_pokemons = {
     "id_equipo": 1,
     "nombre": "Equipo Elite",
@@ -678,23 +679,25 @@ equipo = {
         },
     ],
 }
+
+# ------------------------ JSONS POKEMONS -----------------------------
 infernape_mock = {
-        "pokemon_id": 392,
-        "nombre": "infernape",
-        "imagen": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/392.png",
-        "tipos": ["Lucha", "Fuego"],
-        "habilidades": ["Mar Llamas", "Puño Férreo"],
-        "altura": 12,
-        "peso": 550,
-        "estadisticas": {
-            "hp": 76,
-            "attack": 104,
-            "defense": 71,
-            "special-attack": 104,
-            "special-defense": 71,
-            "speed": 108,
-            "accuracy": 0,
-            "evasion": 0,
-        },
-        "cadena_evolutiva": [390, 391, 392],
-    }
+    "pokemon_id": 392,
+    "nombre": "infernape",
+    "imagen": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/392.png",
+    "tipos": ["Lucha", "Fuego"],
+    "habilidades": ["Mar Llamas", "Puño Férreo"],
+    "altura": 12,
+    "peso": 550,
+    "estadisticas": {
+        "hp": 76,
+        "attack": 104,
+        "defense": 71,
+        "special-attack": 104,
+        "special-defense": 71,
+        "speed": 108,
+        "accuracy": 0,
+        "evasion": 0,
+    },
+    "cadena_evolutiva": [390, 391, 392],
+}
