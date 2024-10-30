@@ -27,7 +27,7 @@ def upgrade() -> None:
         sa.Column("tipo", sa.Text, nullable=False),
         sa.Column("power", sa.Integer),
         sa.Column("accuracy", sa.Integer),
-        sa.Column("pp", sa.Integer, nullable=False),
+        sa.Column("pp", sa.Integer),
         sa.Column("generacion", sa.Text, nullable=False),
         sa.Column("categoria", sa.Text, nullable=False),
         sa.Column("efecto", sa.Text, nullable=False),
