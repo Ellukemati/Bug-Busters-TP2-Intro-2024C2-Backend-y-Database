@@ -4,7 +4,7 @@ import logging
 from app.db.database import init_db
 
 logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(_name_)
+logger = logging.getLogger(__name__)
 
 app = FastAPI()
 

@@ -1,7 +1,6 @@
 from typing import Generator, Annotated
 from sqlmodel import SQLModel, Session, create_engine, select
 from fastapi import Depends
-from main import logger
 
 from app.models.naturaleza import Naturaleza
 from app.db.cargar_naturalezas import cargar_naturalezas
@@ -9,7 +8,7 @@ import logging
 
 
 logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger('_main_.')
+logger = logging.getLogger(__name__)
 
 SQLITE_FILE_PATH = "app/db/database.db"
 
