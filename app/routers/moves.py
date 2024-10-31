@@ -1,22 +1,25 @@
 from fastapi import APIRouter, HTTPException, status
 import csv
 from app.routers.pokemons import lista_contenido_limitado
-from models import Pokemon, Movimiento, Error
-from app.routers.funciones import buscar_movimiento
+from models import Pokemon
+from app.models.movimiento import Movimiento
+from sqlmodel import select
+from app.models.error import Error
+from app.db.database import SessionDep
+
 
 router = APIRouter()
 
-MOVES_CSV = "moves.csv"
-MOVES_DAMAGE_CSV = "move_damage_class.csv"
-MOVE_EFFECT_CSV = "move_effect.csv"
-TYPE_NAMES = "type_names.csv"
-ESPANIOL = 7
-INGLES = 9
-
 
 @router.get("/{id}", responses={status.HTTP_404_NOT_FOUND: {"model": Error}})
-def show(id: int) -> Movimiento:
-    return buscar_movimiento(id)
+def show(session: SessionDep, id: int) -> Movimiento:
+    movimiento = session.exec(select(Movimiento).where(Movimiento.id == id)).first()
+
+    if movimiento:
+        return movimiento
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND, detail="Movimiento not found"
+    )
 
 
 # generacion de lista, podria ser movida a otro py
@@ -73,8 +76,3 @@ def encontrar_pokemones_por_id_mov(ID):
                                     )
                                 )
     return lista_final
-
-
-@router.get("/{id}", responses={status.HTTP_404_NOT_FOUND: {"model": Error}})
-def show(id: int) -> Movimiento:
-    return buscar_movimiento(id)
