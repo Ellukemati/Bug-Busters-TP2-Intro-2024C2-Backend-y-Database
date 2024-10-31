@@ -1,6 +1,9 @@
 # incluyan clases de lo que haga falta
 from fastapi import APIRouter, HTTPException, status
-from models import Movimiento, Pokemon, Integrante_pokemon, Equipo, Naturaleza
+from sqlmodel import Session, select
+from app.db.database import SessionDep
+from app.models.naturaleza import Naturaleza
+from models import Movimiento, Pokemon, Integrante_pokemon, Equipo
 
 import csv
 
@@ -33,7 +36,9 @@ with open("natures.csv", mode="r") as naturalezas_file:
 
 
 @router.get("/natures")
-def show_natures() -> list[Naturaleza]:
+def show_natures(Session: SessionDep) -> list[Naturaleza]:
+    query = select(Naturaleza)
+    naturalezas = Session.exec(query)
     return Naturalezas
 
 
