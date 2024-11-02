@@ -39,4 +39,3 @@ def init_db():
             logger.info("Cargando movimientos...")
             cargar_movimientos(session)
             logger.info("Movimientos cargados con exito.")
-
