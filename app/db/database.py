@@ -4,11 +4,14 @@ from fastapi import Depends
 
 from app.models.naturaleza import Naturaleza
 from app.db.cargar_naturalezas import cargar_naturalezas
+from app.models.movimiento import Movimiento
+from app.db.cargar_movimientos import cargar_movimientos
 import logging
 
-
+# Configura el logger
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
 
 SQLITE_FILE_PATH = "app/db/database.db"
 
@@ -32,3 +35,8 @@ def init_db():
             logger.info("Cargando naturalezas...")
             cargar_naturalezas(session)
             logger.info("Naturalezas cargadas con exito.")
+        if not session.exec(select(Movimiento)).first():
+            logger.info("Cargando movimientos...")
+            cargar_movimientos(session)
+            logger.info("Movimientos cargados con exito.")
+
