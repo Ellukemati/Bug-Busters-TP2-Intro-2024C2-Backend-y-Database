@@ -8,21 +8,17 @@ from jsons import (
     nature_3,
 )
 from fastapi.testclient import TestClient
-from app.routers.teams import teams, Naturalezas
+from app.routers.teams import teams
 from models import Equipo
 from main import app
-from app.routers.teams import Naturalezas
+from app.models.naturaleza import Naturaleza
+from sqlmodel import Session, select
+from app.db.database import SessionDep
 
 client = TestClient(app)
 
 
 def test_get_natures():
-    Naturalezas.clear()
-    Naturalezas.append(nature_1)
-    Naturalezas.append(nature_2)
-    Naturalezas.append(nature_3)
-
-    response = client.get("teams/natures")
 
     response = client.get("teams/natures")
 
