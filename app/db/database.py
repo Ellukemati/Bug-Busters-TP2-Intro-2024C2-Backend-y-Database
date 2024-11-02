@@ -10,6 +10,7 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 SQLITE_FILE_PATH = "app/db/database.db"
 
 engine = create_engine(f"sqlite:///{SQLITE_FILE_PATH}")
@@ -18,6 +19,7 @@ engine = create_engine(f"sqlite:///{SQLITE_FILE_PATH}")
 def get_db() -> Generator[Session, None, None]:
     with Session(engine) as session:
         yield session
+
 
 
 SessionDep = Annotated[Session, Depends(get_db)]
@@ -32,3 +34,4 @@ def init_db():
             logger.info("Cargando movimientos...")
             cargar_movimientos(session)
             logger.info("Movimientos cargados con exito.")
+
