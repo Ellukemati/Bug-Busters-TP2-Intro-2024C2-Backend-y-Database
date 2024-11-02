@@ -16,3 +16,4 @@ def startup_event():
     logger.info("Inicializando la base de datos y cargando datos si es necesario...")
     init_db()
     logger.info("Inicializacion completa.")
+

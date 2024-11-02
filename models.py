@@ -1,4 +1,6 @@
-from pydantic import BaseModel
+from pydantic import BaseModel 
+from app.models.movimiento import Movimiento 
+
 
 class Pokemon(BaseModel):
     pokemon_id: int
@@ -12,23 +14,13 @@ class Pokemon(BaseModel):
     estadisticas: dict[str, int]
     cadena_evolutiva_ids: list[int]
 
+
 class Naturaleza(BaseModel):
     id: int
     nombre: str
     aumenta_estadistica: str
     reduce_estadistica: str
 
-class Movimiento(BaseModel):
-    id: int
-    nombre: str
-    tipo: str
-    power: int | None = None
-    accuracy: int | None = None
-    pp: int
-    generacion: str
-    categoria: str
-    efecto: str
-    probabilidad_efecto: int | None = None
 
 class Integrante_pokemon(BaseModel):
     id: int
@@ -36,10 +28,12 @@ class Integrante_pokemon(BaseModel):
     naturaleza: Naturaleza
     movimientos: list[Movimiento]
 
+
 class Equipo(BaseModel):
     id_equipo: int
     nombre: str
     pokemons_de_equipo: list[Integrante_pokemon]
+
 
 class Error(BaseModel):
     detail: str
