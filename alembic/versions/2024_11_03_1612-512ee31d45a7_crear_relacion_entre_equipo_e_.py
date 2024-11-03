@@ -19,16 +19,15 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    with op.batch_alter_table('Integrante_pokemon') as batch_op:
-        batch_op.add_column(sa.Column('id_equipo', sa.Integer))
-        batch_op.create_foreign_key('fk_pokemon_Equipo', 'Equipo', ['id_equipo'], ['id'])
+    with op.batch_alter_table('integrante_pokemon') as batch_op:
+        batch_op.add_column(sa.Column('Equipo_id', sa.Integer))
+        batch_op.create_foreign_key('fk_equipo_integrante', 'Equipo', ['equipo_id'], ['id_equipo'])
 
 
 def downgrade() -> None:
-    with op.batch_alter_table('Integrante_pokemon') as batch_op:
+    with op.batch_alter_table('integrante_pokemon') as batch_op:
         batch_op.drop_constraint(
-            'fk_pokemon_equipo', type_='foreignkey')
+            'fk_equipo_integrante', type_='foreignhey')
         batch_op.drop_column(
-            'id_equipo'
+            'equipo_id'
         )
-

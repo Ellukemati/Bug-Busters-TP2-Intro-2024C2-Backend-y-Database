@@ -23,7 +23,6 @@ def upgrade() -> None:
         'Equipo',
         sa.Column('id_equipo', sa.INTEGER, primary_key=True),
         sa.Column('nombre', sa.TEXT, nullable=False),
-        sa.Column('pokemons_de_equipo', sa.BLOB, nullable=False),
     )
 
 

@@ -6,3 +6,8 @@ class EquipoBase(SQLModel):
 
 class Equipo(EquipoBase, table=True):
     id_equipo: int = Field(primary_key=True)
+
+class EquipoPublic(EquipoBase):
+    id_equipo: int
+    nombre: str
+    pokemons: list["Integrante_pokemon"]
