@@ -18,8 +18,30 @@ from app.db.database import SessionDep
 client = TestClient(app)
 
 
-def test_get_natures():
+def test_get_natures(session: Session, client: TestClient) -> None:
 
+    naturaleza_1 = Naturaleza(
+        id=1,
+        nombre="hardy",
+        aumenta_estadistica="attack",
+        reduce_estadistica="attack",
+    )
+    session.add(naturaleza_1)
+    naturaleza_2 = Naturaleza(
+        id=2,
+        nombre="bold",
+        aumenta_estadistica="defense",
+        reduce_estadistica="attack",
+    )
+    session.add(naturaleza_2)
+    naturaleza_3 = Naturaleza(
+        id=3,
+        nombre="modest",
+        aumenta_estadistica="special-attack",
+        reduce_estadistica="attack",
+    )
+    session.add(naturaleza_3)
+    session.commit()
     response = client.get("teams/natures")
 
 
