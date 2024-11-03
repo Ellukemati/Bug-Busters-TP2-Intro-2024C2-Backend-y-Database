@@ -27,10 +27,12 @@ def upgrade() -> None:
         sa.Column("pokemon_id", sa.Integer(), nullable=False),
         sa.Column("naturaleza_id", sa.Integer(), nullable=False),
         sa.ForeignKeyConstraint(
-            ["pokemon_id"], ["pokemon.pokemon_id"], ondelete="CASCADE"
+            ["pokemon_id"],
+            ["pokemon.pokemon_id"],
         ),
         sa.ForeignKeyConstraint(
-            ["naturaleza_id"], ["Naturaleza.id"], ondelete="CASCADE"
+            ["naturaleza_id"],
+            ["Naturaleza.id"],
         ),
     )
 

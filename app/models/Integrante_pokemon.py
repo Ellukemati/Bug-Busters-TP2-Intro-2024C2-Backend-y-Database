@@ -3,8 +3,8 @@ from app.models.movimiento import Movimiento
 
 
 class IntegranteMovimientoLink(SQLModel):
-    integrante_id: int
-    movimiento_id: int
+    integrante_id: int = Field(foreign_key="integrante_pokemon.id", primary_key=True)
+    movimiento_id: int = Field(foreign_key="Movimiento.id", primary_key=True)
 
 
 class Integrante_pokemonBase(SQLModel):
@@ -14,9 +14,7 @@ class Integrante_pokemonBase(SQLModel):
     equipo = Relationship(back_populates="integrantes")
     pokemon = Relationship()
     naturaleza = Relationship()
-    movimientos: list[Movimiento] = Relationship(
-        back_populates="integrantes", link_model=IntegranteMovimientoLink
-    )
+    movimientos: list[Movimiento] = Relationship(link_model=IntegranteMovimientoLink)
 
 
 class Integrante_pokemon(Integrante_pokemonBase, table=True):
