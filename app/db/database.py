@@ -2,16 +2,16 @@ from typing import Generator, Annotated
 from sqlmodel import SQLModel, Session, create_engine, select
 from fastapi import Depends
 
-# Configura el logger
-from app.models.movimiento import Movimiento
-from app.db.cargar_movimientos import cargar_movimientos
 from app.models.naturaleza import Naturaleza
 from app.db.cargar_naturalezas import cargar_naturalezas
+from app.models.movimiento import Movimiento
+from app.db.cargar_movimientos import cargar_movimientos
 import logging
 
-
+# Configura el logger
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
 
 SQLITE_FILE_PATH = "app/db/database.db"
 
@@ -31,11 +31,11 @@ def init_db():
 
     with Session(engine) as session:
 
-        if not session.exec(select(Movimiento)).first():
-            logger.info("Cargando movimientos...")
-            cargar_movimientos(session)
-            logger.info("Movimientos cargados con exito.")
         if not session.exec(select(Naturaleza)).first():
             logger.info("Cargando naturalezas...")
             cargar_naturalezas(session)
             logger.info("Naturalezas cargadas con exito.")
+        if not session.exec(select(Movimiento)).first():
+            logger.info("Cargando movimientos...")
+            cargar_movimientos(session)
+            logger.info("Movimientos cargados con exito.")
