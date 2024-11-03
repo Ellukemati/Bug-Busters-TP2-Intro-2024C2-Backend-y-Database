@@ -22,6 +22,7 @@ def get_db() -> Generator[Session, None, None]:
         yield session
 
 
+
 SessionDep = Annotated[Session, Depends(get_db)]
 
 
@@ -38,3 +39,4 @@ def init_db():
             logger.info("Cargando movimientos...")
             cargar_movimientos(session)
             logger.info("Movimientos cargados con exito.")
+
