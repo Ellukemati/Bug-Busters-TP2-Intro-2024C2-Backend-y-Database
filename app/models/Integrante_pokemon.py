@@ -1,5 +1,6 @@
 from sqlmodel import SQLModel, Field, Relationship
 from app.models.movimiento import Movimiento
+from app.models.naturaleza import Naturaleza
 
 
 class IntegranteMovimientoLink(SQLModel):
@@ -19,3 +20,9 @@ class Integrante_pokemonBase(SQLModel):
 
 class Integrante_pokemon(Integrante_pokemonBase, table=True):
     id: int = Field(primary_key=True)
+
+class Integrante_pokemonPublic(Integrante_pokemonBase):
+    pokemon_id: int
+    nombre: str
+    naturaleza: Naturaleza
+    movimientos: list[Movimiento] = []

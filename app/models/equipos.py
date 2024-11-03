@@ -10,4 +10,4 @@ class Equipo(EquipoBase, table=True):
 class EquipoPublic(EquipoBase):
     id_equipo: int
     nombre: str
-    pokemons: list["Integrante_pokemon"]
+    pokemons: list["Integrante_pokemon"] = []
