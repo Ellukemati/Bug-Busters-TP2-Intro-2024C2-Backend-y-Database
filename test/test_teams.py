@@ -8,22 +8,40 @@ from jsons import (
     nature_3,
 )
 from fastapi.testclient import TestClient
-from app.routers.teams import teams, Naturalezas
+from app.routers.teams import teams
 from models import Equipo
 from main import app
-from app.routers.teams import Naturalezas
+from app.models.naturaleza import Naturaleza
+from sqlmodel import Session, select
+from app.db.database import SessionDep
 
 client = TestClient(app)
 
 
-def test_get_natures():
-    Naturalezas.clear()
-    Naturalezas.append(nature_1)
-    Naturalezas.append(nature_2)
-    Naturalezas.append(nature_3)
+def test_get_natures(session: Session, client: TestClient) -> None:
 
-    response = client.get("teams/natures")
-
+    naturaleza_1 = Naturaleza(
+        id=1,
+        nombre="hardy",
+        aumenta_estadistica="attack",
+        reduce_estadistica="attack",
+    )
+    session.add(naturaleza_1)
+    naturaleza_2 = Naturaleza(
+        id=2,
+        nombre="bold",
+        aumenta_estadistica="defense",
+        reduce_estadistica="attack",
+    )
+    session.add(naturaleza_2)
+    naturaleza_3 = Naturaleza(
+        id=3,
+        nombre="modest",
+        aumenta_estadistica="special-attack",
+        reduce_estadistica="attack",
+    )
+    session.add(naturaleza_3)
+    session.commit()
     response = client.get("teams/natures")
 
 
@@ -120,4 +138,3 @@ def test_actualizar_equipo_no_existente():
     response = client.put("/teams", json=equipo)
     assert response.status_code == 404
     assert response.json()["detail"] == "No se encontro un equipo con ese id"
-
