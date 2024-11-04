@@ -15,7 +15,7 @@ class Integrante_pokemonBase(SQLModel):
     equipo = Relationship(back_populates="integrantes")
     pokemon = Relationship()
     naturaleza = Relationship()
-    movimientos: list[Movimiento] = Relationship(link_model=IntegranteMovimientoLink)
+    movimientos: list["Movimiento"] = Relationship(link_model=IntegranteMovimientoLink)
 
 
 class Integrante_pokemon(Integrante_pokemonBase, table=True):
@@ -25,4 +25,4 @@ class Integrante_pokemonPublic(Integrante_pokemonBase):
     pokemon_id: int
     nombre: str
     naturaleza: Naturaleza
-    movimientos: list[Movimiento] = []
+    movimientos: list["Movimiento"] = []
