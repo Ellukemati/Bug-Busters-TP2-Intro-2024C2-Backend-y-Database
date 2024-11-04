@@ -1,7 +1,9 @@
 # incluyan clases de lo que haga falta
 from fastapi import APIRouter, HTTPException, status
-from models import Movimiento, Pokemon, Integrante_pokemon, Equipo, Naturaleza
-
+from models import Movimiento, Pokemon, Integrante_pokemon, Naturaleza, Error
+from app.models.equipos import Equipo
+from sqlmodel import select, Session
+from app.db.database import SessionDep
 import csv
 
 
@@ -80,21 +82,12 @@ def show_id_team(id: int) -> Equipo:
     )
 
 
-@router.delete("/{id}")
-def borrar_equipo(id: int) -> Equipo:
-    for indice, equipo_existente in enumerate(teams):
-        id_equipo_existente = (
-            equipo_existente.get("id_equipo")
-            if isinstance(equipo_existente, dict)
-            else equipo_existente.id_equipo
-        )
-        if id_equipo_existente == id:
-            teams.pop(indice)
-            return equipo_existente
-    raise HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND,
-        detail="No se encontro un equipo con ese id",
-    )
+@router.delete("/{id}", responses={status.HTTP_404_NOT_FOUND: {"model": Error}})
+def borrar_equipo(session: SessionDep, id: int) -> Equipo:
+    equipo = session.exec(select(Equipo).where(Equipo.id_equipo == id)). first()
+    session.delete(equipo)
+    session.commit()
+    return equipo
 
 @router.put("/")
 def update(equipo_actualizado: Equipo) -> Equipo:
