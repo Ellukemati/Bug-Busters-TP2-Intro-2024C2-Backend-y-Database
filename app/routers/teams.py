@@ -1,7 +1,9 @@
 # incluyan clases de lo que haga falta
 from fastapi import APIRouter, HTTPException, status
-from models import Movimiento, Pokemon, Integrante_pokemon, Equipo, Naturaleza
-
+from models import Movimiento, Pokemon, Integrante_pokemon, Equipo, Naturaleza, Error
+from app.models.equipos import EquipoPublic
+from sqlmodel import select, Session
+from app.db.database import SessionDep
 import csv
 
 
@@ -65,19 +67,12 @@ def get_teams() -> list[Equipo]:
     return teams
 
 
-@router.get("/{id}")
-def show_id_team(id: int) -> Equipo:
-    for indice, equipo_existente in enumerate(teams):
-        id_equipo_existente = (
-            equipo_existente.get("id_equipo")
-            if isinstance(equipo_existente, dict)
-            else equipo_existente.id_equipo
-        )
-        if id_equipo_existente == id:
-            return teams[indice]
-    raise HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND, detail="No se encontro el equipo"
-    )
+@router.get("/{id}", responses={status.HTTP_404_NOT_FOUND: {"model": Error}})
+def show_id_team(session: SessionDep, id: int) -> EquipoPublic:
+    equipo = session.exec(select(EquipoPublic).where(EquipoPublic.id_equipo == id)). first()
+    if equipo:
+        return equipo
+    raise HTTPException(status_code=status.HTTP_NOT_FOUND, detail="Equipo no encontrado")
 
 
 @router.delete("/{id}")
