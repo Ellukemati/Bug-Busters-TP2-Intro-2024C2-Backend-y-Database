@@ -1,7 +1,9 @@
 # incluyan clases de lo que haga falta
 from fastapi import APIRouter, HTTPException, status
-from models import Movimiento, Pokemon, Integrante_pokemon, Equipo, Naturaleza
-
+from models import Movimiento, Pokemon, Integrante_pokemon, Naturaleza, Error
+from app.models.equipos import EquipoPublic, Equipo
+from sqlmodel import select, Session
+from app.db.database import SessionDep
 import csv
 
 
@@ -38,26 +40,16 @@ def show_natures() -> list[Naturaleza]:
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
-def post_team(team: Equipo) -> list[Equipo]:
-    for equipo_existente in teams:
-        id_equipo_existente = (
-            equipo_existente.get("id_equipo")
-            if isinstance(equipo_existente, dict)
-            else equipo_existente.id_equipo
-        )
-        if id_equipo_existente == team.id_equipo:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Ya existe un equipo con ese id",
-            )
-    if len(team.pokemons_de_equipo) > 6:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Puedes tener un maximo de seis pokemons",
-        )
-
-    teams.append(team)
-    return teams
+def post_team(session: SessionDep, team: Equipo) -> list[Equipo]:
+    equipo = Equipo(
+        id_equipo = team.id_equipo,
+        nombre = team.nombre,
+        pokemons_de_equipo = team.pokemons_de_equipo
+    )
+    session.add(equipo)
+    session.commit()
+    session.refresh(equipo)
+    return equipo
 
 
 @router.get("/")
