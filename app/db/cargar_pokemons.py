@@ -20,6 +20,7 @@ engine = create_engine(DATABASE_URL)
 
 def cargar_pokemons(session: Session):
     pokemons = {}
+    ids_movimientos_por_pokemon = {}
     with open(POKEMON_CSV, mode="r", encoding="utf-8") as archivo_csv:
         pokemon_reader = csv.DictReader(archivo_csv)
         for fila in pokemon_reader:
@@ -44,6 +45,7 @@ def cargar_pokemons(session: Session):
                 posibles_movimientos=[]
             )
             pokemons[pokemon_id] = pokemon
+            ids_movimientos_por_pokemon[pokemon_id] = set()
 
     # Carga de estadísticas
     estadisticas_nombres = {}
@@ -175,10 +177,14 @@ def cargar_pokemons(session: Session):
             pokemon_id = int(fila["pokemon_id"])
             move_id = int(fila["move_id"])
 
+            if move_id in ids_movimientos_por_pokemon[pokemon_id]:
+                continue
+
             pokemon_movimiento = PokemonMovimiento(
                 pokemon_id=pokemon_id,
                 movimiento_id=move_id
             )
+            ids_movimientos_por_pokemon[pokemon_id].add(move_id)
             session.add(pokemon_movimiento)
 
         session.commit()
