@@ -83,6 +83,8 @@ def cargar_pokemons(session: Session):
             if fila["local_language_id"] == "7":
                 type_id = int(fila["type_id"])
                 tipos_nombres[type_id] = fila["name"]
+            elif fila["type_id"] == "10002":
+                tipos_nombres[10002] = "Oscuro"
 
     with open(POKEMON_TYPES_CSV, mode="r", encoding="utf-8") as archivo_csv:
         pokemon_types_reader = csv.DictReader(archivo_csv)
@@ -169,15 +171,14 @@ def cargar_pokemons(session: Session):
     # Carga de las relaciones Pokémon-Movimientos
     with open(POKEMON_MOVES_CSV, mode="r", encoding="utf-8") as archivo_csv:
         pokemon_moves_reader = csv.DictReader(archivo_csv)
-        with Session(engine) as session:
-            for fila in pokemon_moves_reader:
-                pokemon_id = int(fila["pokemon_id"])
-                move_id = int(fila["move_id"])
+        for fila in pokemon_moves_reader:
+            pokemon_id = int(fila["pokemon_id"])
+            move_id = int(fila["move_id"])
 
-                pokemon_movimiento = PokemonMovimiento(
-                    pokemon_id=pokemon_id,
-                    movimiento_id=move_id
-                )
-                session.add(pokemon_movimiento)
+            pokemon_movimiento = PokemonMovimiento(
+                pokemon_id=pokemon_id,
+                movimiento_id=move_id
+            )
+            session.add(pokemon_movimiento)
 
-            session.commit()
+        session.commit()

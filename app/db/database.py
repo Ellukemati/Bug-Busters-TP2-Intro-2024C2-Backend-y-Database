@@ -2,6 +2,8 @@ from typing import Generator, Annotated
 from sqlmodel import SQLModel, Session, create_engine, select
 from fastapi import Depends
 
+from app.models.pokemon import Pokemon
+from app.db.cargar_pokemons import cargar_pokemons
 from app.models.naturaleza import Naturaleza
 from app.db.cargar_naturalezas import cargar_naturalezas
 from app.models.movimiento import Movimiento
@@ -30,7 +32,10 @@ def init_db():
     SQLModel.metadata.create_all(engine)
 
     with Session(engine) as session:
-
+        if not session.exec(select(Pokemon)).first():
+            logger.info("Cargando Pokémon...")
+            cargar_pokemons(session)
+            logger.info("Pokémon cargados con éxito.")
         if not session.exec(select(Naturaleza)).first():
             logger.info("Cargando naturalezas...")
             cargar_naturalezas(session)
@@ -39,4 +44,3 @@ def init_db():
             logger.info("Cargando movimientos...")
             cargar_movimientos(session)
             logger.info("Movimientos cargados con exito.")
-
