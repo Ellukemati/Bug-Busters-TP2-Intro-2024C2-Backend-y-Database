@@ -18,6 +18,7 @@ MOVE_EFFECT_CSV = "move_effect_prose.csv"
 DATABASE_URL = "sqlite:///app/db/database.py"
 engine = create_engine(DATABASE_URL)
 
+
 def cargar_pokemons(session: Session):
     pokemons = {}
     with open(POKEMON_CSV, mode="r", encoding="utf-8") as archivo_csv:
@@ -41,7 +42,7 @@ def cargar_pokemons(session: Session):
                 estadistica_special_attack=0,
                 estadistica_special_defense=0,
                 estadistica_speed=0,
-                posibles_movimientos=[]
+                posibles_movimientos=[],
             )
             pokemons[pokemon_id] = pokemon
 
@@ -126,8 +127,8 @@ def cargar_pokemons(session: Session):
     with open(MOVE_EFFECT_CSV, mode="r", encoding="utf-8") as archivo_csv:
         move_effect_reader = csv.DictReader(archivo_csv)
         for fila in move_effect_reader:
-            move_effect_id = int(fila['move_effect_id'])
-            short_effect = fila['short_effect']
+            move_effect_id = int(fila["move_effect_id"])
+            short_effect = fila["short_effect"]
             efectos_movimientos[move_effect_id] = short_effect
 
     movimientos = {}
@@ -159,7 +160,9 @@ def cargar_pokemons(session: Session):
                 generacion=f"Generación {fila['generation_id']}",
                 categoria=nombre_categoria,
                 efecto=efecto_descripcion,
-                probabilidad_efecto=int(fila["effect_chance"]) if fila["effect_chance"] else None
+                probabilidad_efecto=(
+                    int(fila["effect_chance"]) if fila["effect_chance"] else None
+                ),
             )
             movimientos[id_movimiento] = movimiento
 
@@ -175,8 +178,7 @@ def cargar_pokemons(session: Session):
                 move_id = int(fila["move_id"])
 
                 pokemon_movimiento = PokemonMovimiento(
-                    pokemon_id=pokemon_id,
-                    movimiento_id=move_id
+                    pokemon_id=pokemon_id, movimiento_id=move_id
                 )
                 session.add(pokemon_movimiento)
 
