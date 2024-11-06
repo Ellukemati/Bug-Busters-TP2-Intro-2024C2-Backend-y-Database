@@ -6,8 +6,8 @@ from app.models.naturaleza import Naturaleza
 from app.db.cargar_naturalezas import cargar_naturalezas
 from app.models.movimiento import Movimiento
 from app.db.cargar_movimientos import cargar_movimientos
-from app.models.pokemon import Pokemon
-from app.db.cargar_pokemons import cargar_pokemons
+#from app.models.pokemon import Pokemon
+#from app.db.cargar_pokemons import cargar_pokemons
 import logging
 
 # Configura el logger
@@ -41,7 +41,7 @@ def init_db():
             logger.info("Cargando movimientos...")
             cargar_movimientos(session)
             logger.info("Movimientos cargados con exito.")
-        if not session.exec(select(Pokemon)).first():
-            logger.info("Cargando Pokemons...")
-            cargar_pokemons(session)
-            logger.info("Pokemons cargados con exito.")
+        #if not session.exec(select(Pokemon)).first():
+            #logger.info("Cargando Pokemons...")
+            #cargar_pokemons(session)
+            #logger.info("Pokemons cargados con exito.")
