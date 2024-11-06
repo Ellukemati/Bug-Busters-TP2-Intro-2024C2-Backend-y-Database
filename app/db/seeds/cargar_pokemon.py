@@ -1,6 +1,8 @@
 import csv
 from sqlmodel import Session, create_engine
-from app.models.pokemon import Pokemon, Movimiento, PokemonMovimiento
+
+from app.models.pokemon import Pokemon
+from app.models.pokemonMovimiento import PokemonMovimiento
 
 POKEMON_CSV = "pokemon.csv"
 POKEMON_STATS_CSV = "pokemon_stats.csv"
