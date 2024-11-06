@@ -1,6 +1,6 @@
 from sqlmodel import SQLModel, Field, Relationship
 from typing import List
-from app.models.Integrante_pokemon import Integrante_pokemon
+from app.models.Integrante_pokemon import Integrante_pokemonPublic, Integrante_pokemon
 class EquipoBase(SQLModel):
     nombre: str
     
@@ -12,4 +12,4 @@ class Equipo(EquipoBase, table=True):
 class EquipoPublic(EquipoBase):
     id_equipo: int
     nombre: str
-    pokemons: list["Integrante_pokemon"] = []
+    pokemons: list["Integrante_pokemonPublic"] = []
