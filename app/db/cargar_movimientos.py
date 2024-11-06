@@ -1,6 +1,6 @@
 import csv
 from app.db.database import Session
-from app.models.movimiento import Movimiento
+from models import Movimiento
 
 MOVES_CSV = "moves.csv"
 MOVES_DAMAGE_CSV = "move_damage_class.csv"

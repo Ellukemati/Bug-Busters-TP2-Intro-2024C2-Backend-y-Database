@@ -1,7 +1,8 @@
 # incluyan clases de lo que haga falta
 from fastapi import APIRouter, HTTPException, status
-from models import Movimiento, Pokemon, Integrante_pokemon, Equipo, Naturaleza
-
+from models import Movimiento, Pokemon, Integrante_pokemon, Naturaleza, EquipoPublic
+from sqlmodel import Session, select
+from app.db.database import SessionDep
 import csv
 
 
@@ -61,8 +62,10 @@ def post_team(team: Equipo) -> list[Equipo]:
 
 
 @router.get("/")
-def get_teams() -> list[Equipo]:
-    return teams
+def get_teams(session: SessionDep) -> list[EquipoPublic]:
+    query = select(EquipoPublic)
+    equipos = session.exec(query)
+    return equipos
 
 
 @router.get("/{id}")
@@ -111,4 +114,3 @@ def update(equipo_actualizado: Equipo) -> Equipo:
         status_code=status.HTTP_404_NOT_FOUND,
         detail="No se encontro un equipo con ese id",
     )
-

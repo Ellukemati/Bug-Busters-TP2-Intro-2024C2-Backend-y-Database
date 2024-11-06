@@ -2,9 +2,9 @@ from typing import Generator, Annotated
 from sqlmodel import SQLModel, Session, create_engine, select
 from fastapi import Depends
 
-from app.models.naturaleza import Naturaleza
+from models import Naturaleza
 from app.db.cargar_naturalezas import cargar_naturalezas
-from app.models.movimiento import Movimiento
+from models import Movimiento
 from app.db.cargar_movimientos import cargar_movimientos
 #from app.models.pokemon import Pokemon
 #from app.db.cargar_pokemons import cargar_pokemons

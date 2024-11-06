@@ -1,6 +1,6 @@
 import csv
 from app.db.database import Session
-from app.models.naturaleza import Naturaleza
+from models import Naturaleza
 
 
 
