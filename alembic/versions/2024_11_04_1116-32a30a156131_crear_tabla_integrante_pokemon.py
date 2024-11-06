@@ -1,4 +1,4 @@
-"""Crear tabla Integrante_pokemon
+"""Crear tabla integrante_pokemon
 
 Revision ID: 32a30a156131
 Revises: badc6a43c32f
@@ -14,7 +14,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision: str = "32a30a156131"
-down_revision: Union[str, None] = "badc6a43c32f"
+down_revision: Union[str, None] = "25d8e8b1052c"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 

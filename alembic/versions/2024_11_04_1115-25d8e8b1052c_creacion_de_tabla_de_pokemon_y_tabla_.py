@@ -1,7 +1,7 @@
 """Creación de tabla de Pokemon y tabla intermedia entre Pokemon y Movimiento
 
 Revision ID: 25d8e8b1052c
-Revises: 1f5e7255ea81
+Revises: badc6a43c32f
 Create Date: 2024-11-04 19:35:11.774815
 
 """
@@ -12,8 +12,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = "2"
-down_revision: Union[str, None] = "a82e39b2db28"
+revision: str = "25d8e8b1052c"
+down_revision: Union[str, None] = "badc6a43c32f"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
