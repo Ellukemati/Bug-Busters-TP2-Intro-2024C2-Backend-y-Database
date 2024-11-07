@@ -63,24 +63,26 @@ class EquipoPublic(EquipoBase):
     nombre: str
     pokemons: list["Integrante_pokemon"] = []
 
-class IntegranteMovimientoLink(SQLModel):
+class IntegranteMovimientoLink(SQLModel, table=True):
     integrante_id: int = Field(foreign_key="integrante_pokemon.id", primary_key=True)
     movimiento_id: int = Field(foreign_key="Movimiento.id", primary_key=True)
 
 
 class Integrante_pokemonBase(SQLModel):
-    pokemon_id: int = Field(foreign_key="pokemon.pokemon.id")
-    naturaleza_id: int = Field(foreign_key="Naturaleza.id")
+    pass
     
     
 
 
 class Integrante_pokemon(Integrante_pokemonBase, table=True):
     id: int = Field(primary_key=True)
-    equipo_id: int = Field(default=None, foreign_key="Equipo.id_equipo")
+    equipo_id: int = Field(default=None, foreign_key="equipo.id_equipo")
     equipo: Equipo = Relationship(back_populates="pokemons_de_equipo")
-    movimientos: list["Movimiento"] = Relationship(link_model="IntegranteMovimientoLink")
+    movimientos: list["Movimiento"] = Relationship(link_model=IntegranteMovimientoLink)
+    pokemon_id: int = Field(foreign_key="pokemon.pokemon.id")
+    naturaleza_id: int = Field(foreign_key="Naturaleza.id")
 class Integrante_pokemonPublic(Integrante_pokemonBase):
+    id: int
     pokemon_id: int
     naturaleza: Naturaleza
     movimientos: list["Movimiento"] = []

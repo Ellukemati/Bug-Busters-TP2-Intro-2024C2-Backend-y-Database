@@ -15,7 +15,7 @@ class Integrante_pokemonBase(SQLModel):
     
     pokemon = Relationship()
     naturaleza = Relationship()
-    movimientos: List[Movimiento] = Relationship(link_model="IntegranteMovimientoLink")
+    movimientos: List[Movimiento] = Relationship(link_model=IntegranteMovimientoLink)
 
 
 class Integrante_pokemon(Integrante_pokemonBase, table=True):
