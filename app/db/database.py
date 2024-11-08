@@ -7,7 +7,7 @@ from app.models.movimiento import Movimiento
 from app.models.naturaleza import Naturaleza
 from app.db.seeds.cargar_pokemon import cargar_pokemon
 from app.db.seeds.cargar_movimientos import cargar_movimientos
-from app.db.cargar_naturalezas import cargar_naturalezas
+from app.db.seeds.cargar_naturalezas import cargar_naturalezas
 import logging
 
 # Configura el logger
