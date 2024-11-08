@@ -136,8 +136,8 @@ def cargar_pokemon(session: Session):
             pokemon = pokemons[pokemon_id]
             evolucion = pokemons[evolution_id]
 
-            pokemon.evolucion_siguiente = evolution_id
-            evolucion.evolucion_anterior = pokemon_id
+            pokemon.id_evolucion_siguiente = evolution_id
+            evolucion.id_evolucion_anterior = pokemon_id
 
 
     session.add_all(pokemons.values())
