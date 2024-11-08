@@ -57,7 +57,7 @@ def test_get_moves_id_pokemon_176():
 def test_obtener_movimiento_existente(session: Session, client: TestClient):
     movimiento_existente = Movimiento(
         id=190,
-        nombre="octazooka",
+        nombre="Pulpocañón",
         tipo="Agua",
         power=65,
         accuracy=85,
@@ -94,7 +94,7 @@ def test_obtener_movimiento_existente_con_casillas_vacias(
 ):
     movimiento_existente = Movimiento(
         id=46,
-        nombre="roar",
+        nombre="Rugido",
         tipo="Normal",
         power=None,
         accuracy=None,
