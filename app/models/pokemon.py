@@ -1,31 +1,27 @@
 from sqlmodel import SQLModel, Field, Relationship
+
+from app.models.pokemonMovimiento import PokemonMovimiento
 from app.models.movimiento import Movimiento
 
-
-class Pokemon(SQLModel, table=True):
-    id: int = Field(primary_key=True)
+class PokemonBase(SQLModel):
     nombre: str
     url_imagen: str
     altura: int
     peso: int
     tipo_1: str
-    tipo_2: str = Field(default=None)
+    tipo_2: str = Field(default=None, nullable=True)
     habilidad_1: str
-    habilidad_2: str = Field(default=None)
-    habilidad_3: str = Field(default=None)
+    habilidad_2: str = Field(default=None, nullable=True)
+    habilidad_3: str = Field(default=None, nullable=True)
     estadistica_hp: int
     estadistica_attack: int
     estadistica_defense: int
     estadistica_special_attack: int
     estadistica_special_defense: int
     estadistica_speed: int
-    posibles_movimientos: list["PokemonMovimiento"] = Relationship(
-        back_populates="pokemon"
-    )
+    id_evolucion_anterior: int = Field(default=None, nullable=True)
+    id_evolucion_siguiente: int = Field(default=None, nullable=True)
 
-
-class PokemonMovimiento(SQLModel, table=True):
-    pokemon_id: int = Field(foreign_key="pokemon.id", primary_key=True)
-    movimiento_id: int = Field(foreign_key="movimiento.id", primary_key=True)
-    pokemon: Pokemon = Relationship(back_populates="posibles_movimientos")
-    movimiento: Movimiento = Relationship()
+class Pokemon(PokemonBase, table=True):
+    id: int = Field(primary_key=True)
+    posibles_movimientos: list[Movimiento] = Relationship(back_populates="pokemon_que_lo_aprenden", link_model=PokemonMovimiento)
