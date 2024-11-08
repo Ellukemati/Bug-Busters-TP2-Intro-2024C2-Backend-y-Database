@@ -13,8 +13,6 @@ POKEMON_ABILITIES_CSV = "pokemon_abilities.csv"
 ABILITY_NAMES_CSV = "ability_names.csv"
 POKEMON_EVOLUTIONS_CSV = "pokemon_evolutions.csv"
 POKEMON_MOVES_CSV = "pokemon_moves.csv"
-MOVES_CSV = "moves.csv"
-MOVE_EFFECT_CSV = "move_effect_prose.csv"
 
 DATABASE_URL = "sqlite:///app/db/database.py"
 engine = create_engine(DATABASE_URL)
@@ -43,6 +41,8 @@ def cargar_pokemon(session: Session):
                 estadistica_special_attack=0,
                 estadistica_special_defense=0,
                 estadistica_speed=0,
+                evolucion_anterior=None,
+                evolucion_siguiente=None,
                 posibles_movimientos=[]
             )
             pokemons[pokemon_id] = pokemon
@@ -125,6 +125,20 @@ def cargar_pokemon(session: Session):
                 pokemon.habilidad_2 = habilidad_nombre
             elif not pokemon.habilidad_3:
                 pokemon.habilidad_3 = habilidad_nombre
+
+    # Carga de evoluciones
+    with open(POKEMON_EVOLUTIONS_CSV, mode="r", encoding="utf-8") as archivo_csv:
+        evoluciones_reader = csv.DictReader(archivo_csv)
+        for fila in evoluciones_reader:
+            pokemon_id = int(fila["id"])
+            evolution_id = int(fila["evolution_id"])
+
+            pokemon = pokemons[pokemon_id]
+            evolucion = pokemons[evolution_id]
+
+            pokemon.evolucion_siguiente = evolution_id
+            evolucion.evolucion_anterior = pokemon_id
+
 
     session.add_all(pokemons.values())
     session.commit()

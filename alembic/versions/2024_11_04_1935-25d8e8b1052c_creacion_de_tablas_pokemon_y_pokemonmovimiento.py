@@ -10,13 +10,11 @@ from typing import Sequence, Union
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision: str = "1"
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
-
 
 def upgrade() -> None:
     op.create_table(
@@ -37,6 +35,8 @@ def upgrade() -> None:
         sa.Column("estadistica_special_attack", sa.Integer, nullable=False),
         sa.Column("estadistica_special_defense", sa.Integer, nullable=False),
         sa.Column("estadistica_speed", sa.Integer, nullable=False),
+        sa.Column("evolucion_anterior", sa.Integer, nullable=True),
+        sa.Column("evolucion_siguiente", sa.Integer, nullable=True),
     )
 
     op.create_table(
