@@ -1,10 +1,11 @@
 """Crear tabla movimientos
 
-Revision ID: bd7c89476a68
-Revises: df4393b9cde7
-Create Date: 2024-10-31 16:02:35.968141
+Revision ID: a82e39b2db28
+Revises: 
+Create Date: 2024-11-04 11:13:55.392536
 
 """
+
 from typing import Sequence, Union
 
 from alembic import op
@@ -12,8 +13,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'bd7c89476a68'
-down_revision: Union[str, None] = 'df4393b9cde7'
+revision: str = "a82e39b2db28"
+down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
