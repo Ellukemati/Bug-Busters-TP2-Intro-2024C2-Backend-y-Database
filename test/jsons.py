@@ -1,4 +1,4 @@
-from models import Movimiento
+from app.models.movimiento import Movimiento
 
 # ---------------------- JSON NATURES ----------------
 nature_1 = {

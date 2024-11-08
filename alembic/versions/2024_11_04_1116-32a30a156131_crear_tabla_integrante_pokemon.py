@@ -31,7 +31,7 @@ def upgrade() -> None:
         ),
         sa.ForeignKeyConstraint(
             ["naturaleza_id"],
-            ["Naturaleza.id"],
+            ["naturaleza.id"],
         ),
     )
 

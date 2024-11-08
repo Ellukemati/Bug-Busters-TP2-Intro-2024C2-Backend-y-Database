@@ -29,5 +29,5 @@ def upgrade() -> None:
 
 def downgrade() -> None:
     with op.batch_alter_table("integrante_pokemon") as batch_op:
-        batch_op.drop_constraint("fk_Equipo_integrante", type_="foreignkey")
+        batch_op.drop_constraint("fk_equipo_integrante", type_="foreignkey")
         batch_op.drop_column("equipo_id")

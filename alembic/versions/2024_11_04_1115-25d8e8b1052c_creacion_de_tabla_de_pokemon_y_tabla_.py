@@ -20,7 +20,7 @@ depends_on: Union[str, Sequence[str], None] = None
 
 def upgrade() -> None:
     op.create_table(
-        "Pokemon",
+        "pokemon",
         sa.Column("id", sa.Integer, primary_key=True),
         sa.Column("nombre", sa.Text, nullable=False),
         sa.Column("url_imagen", sa.Text, nullable=False),
@@ -40,7 +40,7 @@ def upgrade() -> None:
     )
 
     op.create_table(
-        "PokemonMovimiento",
+        "pokemonMovimiento",
         sa.Column("pokemon_id", sa.Integer, sa.ForeignKey("pokemon.id"), primary_key=True),
         sa.Column("movimiento_id", sa.Integer, sa.ForeignKey("movimiento.id"), primary_key=True),
     )
