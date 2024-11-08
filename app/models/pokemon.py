@@ -19,8 +19,8 @@ class PokemonBase(SQLModel):
     estadistica_special_attack: int
     estadistica_special_defense: int
     estadistica_speed: int
-    evolucion_anterior: int = Field(default=None, nullable=True)
-    evolucion_siguiente: int = Field(default=None, nullable=True)
+    id_evolucion_anterior: int = Field(default=None, nullable=True)
+    id_evolucion_siguiente: int = Field(default=None, nullable=True)
 
 class Pokemon(PokemonBase, table=True):
     id: int = Field(primary_key=True)
