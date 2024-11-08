@@ -27,7 +27,7 @@ def cargar_pokemon(session: Session):
             pokemon = Pokemon(
                 id=pokemon_id,
                 nombre=fila["identifier"],
-                url_imagen=f"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{fila["id"]}.png",
+                url_imagen=f"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{fila['id']}.png",
                 altura=int(fila["height"]),
                 peso=int(fila["weight"]),
                 tipo_1="",
