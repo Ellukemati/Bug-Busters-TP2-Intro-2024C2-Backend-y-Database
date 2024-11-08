@@ -30,7 +30,7 @@ class Integrante_pokemon(Integrante_pokemonBase, table=True):
     equipo_id: int = Field(default=None, foreign_key="equipo.id_equipo")
     equipo: Equipo = Relationship(back_populates="pokemons_de_equipo")
     movimientos: list["Movimiento"] = Relationship(link_model=IntegranteMovimientoLink)
-    pokemon_id: int = Field(foreign_key="pokemon.pokemon_id")
+    pokemon_id: int = Field(foreign_key="pokemon.id_repetido")
     naturaleza_id: int = Field(foreign_key="naturaleza.id")
 class Integrante_pokemonPublic(Integrante_pokemonBase):
     id: int
