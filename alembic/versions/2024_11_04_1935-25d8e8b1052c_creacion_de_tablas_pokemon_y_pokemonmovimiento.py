@@ -35,8 +35,8 @@ def upgrade() -> None:
         sa.Column("estadistica_special_attack", sa.Integer, nullable=False),
         sa.Column("estadistica_special_defense", sa.Integer, nullable=False),
         sa.Column("estadistica_speed", sa.Integer, nullable=False),
-        sa.Column("evolucion_anterior", sa.Integer, nullable=True),
-        sa.Column("evolucion_siguiente", sa.Integer, nullable=True),
+        sa.Column("id_evolucion_anterior", sa.Integer, nullable=True),
+        sa.Column("id_evolucion_siguiente", sa.Integer, nullable=True),
     )
 
     op.create_table(
