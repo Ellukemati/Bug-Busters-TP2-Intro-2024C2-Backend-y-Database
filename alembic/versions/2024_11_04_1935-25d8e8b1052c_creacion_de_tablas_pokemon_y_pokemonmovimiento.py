@@ -1,4 +1,4 @@
-"""Creación de tabla de Pokemon y tabla intermedia entre Pokemon y Movimiento
+"""Creación de tablas Pokemon y PokemonMovimiento
 
 Revision ID: 25d8e8b1052c
 Revises: 1f5e7255ea81
@@ -10,13 +10,11 @@ from typing import Sequence, Union
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
-revision: str = "2"
-down_revision: Union[str, None] = "a82e39b2db28"
+revision: str = "1"
+down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
-
 
 def upgrade() -> None:
     op.create_table(
@@ -37,14 +35,24 @@ def upgrade() -> None:
         sa.Column("estadistica_special_attack", sa.Integer, nullable=False),
         sa.Column("estadistica_special_defense", sa.Integer, nullable=False),
         sa.Column("estadistica_speed", sa.Integer, nullable=False),
+        sa.Column("id_evolucion_anterior", sa.Integer, nullable=True),
+        sa.Column("id_evolucion_siguiente", sa.Integer, nullable=True),
     )
 
     op.create_table(
         "PokemonMovimiento",
-        sa.Column("pokemon_id", sa.Integer, sa.ForeignKey("pokemon.id"), primary_key=True),
-        sa.Column("movimiento_id", sa.Integer, sa.ForeignKey("movimiento.id"), primary_key=True),
+        sa.Column("pokemon_id", sa.Integer, primary_key=True),
+        sa.Column("movimiento_id", sa.Integer, primary_key=True),
+        sa.ForeignKeyConstraint(
+            ["pokemon_id"],
+            ["pokemon.id"],
+        ),
+        sa.ForeignKeyConstraint(
+            ["movimiento_id"],
+            ["movimiento.id"],
+        ),
     )
 
 def downgrade() -> None:
-    op.drop_table("pokemon_movimiento")
-    op.drop_table("pokemon")
+    op.drop_table("PokemonMovimiento")
+    op.drop_table("Pokemon")

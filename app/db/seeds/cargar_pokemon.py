@@ -1,7 +1,8 @@
 import csv
 from sqlmodel import Session, create_engine
-from app.models.pokemon import Pokemon, PokemonMovimiento
-from app.models.movimiento import Movimiento
+
+from app.models.pokemon import Pokemon
+from app.models.pokemonMovimiento import PokemonMovimiento
 
 POKEMON_CSV = "pokemon.csv"
 POKEMON_STATS_CSV = "pokemon_stats.csv"
@@ -12,15 +13,13 @@ POKEMON_ABILITIES_CSV = "pokemon_abilities.csv"
 ABILITY_NAMES_CSV = "ability_names.csv"
 POKEMON_EVOLUTIONS_CSV = "pokemon_evolutions.csv"
 POKEMON_MOVES_CSV = "pokemon_moves.csv"
-MOVES_CSV = "moves.csv"
-MOVE_EFFECT_CSV = "move_effect_prose.csv"
 
 DATABASE_URL = "sqlite:///app/db/database.py"
 engine = create_engine(DATABASE_URL)
 
-
-def cargar_pokemons(session: Session):
+def cargar_pokemon(session: Session):
     pokemons = {}
+    ids_movimientos_por_pokemon = {}
     with open(POKEMON_CSV, mode="r", encoding="utf-8") as archivo_csv:
         pokemon_reader = csv.DictReader(archivo_csv)
         for fila in pokemon_reader:
@@ -42,9 +41,12 @@ def cargar_pokemons(session: Session):
                 estadistica_special_attack=0,
                 estadistica_special_defense=0,
                 estadistica_speed=0,
-                posibles_movimientos=[],
+                evolucion_anterior=None,
+                evolucion_siguiente=None,
+                posibles_movimientos=[]
             )
             pokemons[pokemon_id] = pokemon
+            ids_movimientos_por_pokemon[pokemon_id] = set()
 
     # Carga de estadísticas
     estadisticas_nombres = {}
@@ -84,6 +86,8 @@ def cargar_pokemons(session: Session):
             if fila["local_language_id"] == "7":
                 type_id = int(fila["type_id"])
                 tipos_nombres[type_id] = fila["name"]
+            elif fila["type_id"] == "10002":
+                tipos_nombres[10002] = "Oscuro"
 
     with open(POKEMON_TYPES_CSV, mode="r", encoding="utf-8") as archivo_csv:
         pokemon_types_reader = csv.DictReader(archivo_csv)
@@ -122,49 +126,19 @@ def cargar_pokemons(session: Session):
             elif not pokemon.habilidad_3:
                 pokemon.habilidad_3 = habilidad_nombre
 
-    # Carga de movimientos
-    efectos_movimientos = {}
-    with open(MOVE_EFFECT_CSV, mode="r", encoding="utf-8") as archivo_csv:
-        move_effect_reader = csv.DictReader(archivo_csv)
-        for fila in move_effect_reader:
-            move_effect_id = int(fila["move_effect_id"])
-            short_effect = fila["short_effect"]
-            efectos_movimientos[move_effect_id] = short_effect
+    # Carga de evoluciones
+    with open(POKEMON_EVOLUTIONS_CSV, mode="r", encoding="utf-8") as archivo_csv:
+        evoluciones_reader = csv.DictReader(archivo_csv)
+        for fila in evoluciones_reader:
+            pokemon_id = int(fila["id"])
+            evolution_id = int(fila["evolution_id"])
 
-    movimientos = {}
-    with open(MOVES_CSV, mode="r", encoding="utf-8") as archivo_csv:
-        moves_reader = csv.DictReader(archivo_csv)
-        for fila in moves_reader:
-            id_movimiento = int(fila["id"])
-            type_id = int(fila["type_id"])
-            nombre_tipo = tipos_nombres[type_id]
-            id_categoria = fila["damage_class_id"]
-            nombre_categoria = "Desconocida"
-            if id_categoria == "1":
-                nombre_categoria = "status"
-            elif id_categoria == "2":
-                nombre_categoria = "physical"
-            elif id_categoria == "3":
-                nombre_categoria = "special"
+            pokemon = pokemons[pokemon_id]
+            evolucion = pokemons[evolution_id]
 
-            id_efecto = int(fila["effect_id"])
-            efecto_descripcion = efectos_movimientos[id_efecto]
+            pokemon.id_evolucion_siguiente = evolution_id
+            evolucion.id_evolucion_anterior = pokemon_id
 
-            movimiento = Movimiento(
-                id=id_movimiento,
-                nombre=fila["identifier"],
-                tipo=nombre_tipo,
-                power=int(fila["power"]) if fila["power"] else None,
-                accuracy=int(fila["accuracy"]) if fila["accuracy"] else None,
-                pp=int(fila["pp"]) if fila["pp"] else None,
-                generacion=f"Generación {fila['generation_id']}",
-                categoria=nombre_categoria,
-                efecto=efecto_descripcion,
-                probabilidad_efecto=(
-                    int(fila["effect_chance"]) if fila["effect_chance"] else None
-                ),
-            )
-            movimientos[id_movimiento] = movimiento
 
     session.add_all(pokemons.values())
     session.commit()
@@ -172,14 +146,18 @@ def cargar_pokemons(session: Session):
     # Carga de las relaciones Pokémon-Movimientos
     with open(POKEMON_MOVES_CSV, mode="r", encoding="utf-8") as archivo_csv:
         pokemon_moves_reader = csv.DictReader(archivo_csv)
-        with Session(engine) as session:
-            for fila in pokemon_moves_reader:
-                pokemon_id = int(fila["pokemon_id"])
-                move_id = int(fila["move_id"])
+        for fila in pokemon_moves_reader:
+            pokemon_id = int(fila["pokemon_id"])
+            move_id = int(fila["move_id"])
 
-                pokemon_movimiento = PokemonMovimiento(
-                    pokemon_id=pokemon_id, movimiento_id=move_id
-                )
-                session.add(pokemon_movimiento)
+            if move_id in ids_movimientos_por_pokemon[pokemon_id]:
+                continue
 
-            session.commit()
+            pokemon_movimiento = PokemonMovimiento(
+                pokemon_id=pokemon_id,
+                movimiento_id=move_id
+            )
+            ids_movimientos_por_pokemon[pokemon_id].add(move_id)
+            session.add(pokemon_movimiento)
+
+        session.commit()
