@@ -3,6 +3,7 @@ from sqlmodel import SQLModel, Field, Relationship
 from app.models.pokemonMovimiento import PokemonMovimiento
 from app.models.movimiento import Movimiento
 
+
 class PokemonBase(SQLModel):
     nombre: str
     url_imagen: str
@@ -22,6 +23,9 @@ class PokemonBase(SQLModel):
     id_evolucion_anterior: int = Field(default=None, nullable=True)
     id_evolucion_siguiente: int = Field(default=None, nullable=True)
 
+
 class Pokemon(PokemonBase, table=True):
     id: int = Field(primary_key=True)
-    posibles_movimientos: list[Movimiento] = Relationship(back_populates="pokemon_que_lo_aprenden", link_model=PokemonMovimiento)
+    posibles_movimientos: list[Movimiento] = Relationship(
+        back_populates="pokemon_que_lo_aprenden", link_model=PokemonMovimiento
+    )
