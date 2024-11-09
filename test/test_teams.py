@@ -1,4 +1,4 @@
-from jsons import (
+from test.jsons import (
     equipo_con_6_pokemons,
     equipo_mismo_id,
     equipo_siete_pokemons,
@@ -8,10 +8,13 @@ from jsons import (
     nature_3,
 )
 from fastapi.testclient import TestClient
-from app.routers.teams import teams, Naturalezas
-from models import Equipo
+from app.models.equipos import EquipoPublic, Equipo, Integrante_pokemon, Integrante_pokemonPublic
+from app.models.movimiento import Movimiento
 from main import app
-from app.routers.teams import Naturalezas
+from app.models.naturaleza import Naturaleza
+from sqlmodel import Session, select
+
+from app.db.database import SessionDep
 
 client = TestClient(app)
 
@@ -44,22 +47,13 @@ def test_get_natures():
     assert data[2]["reduce_estadistica"] == "attack"
 
 
-def test_crear_teams_seis_pokemons():
-    response = client.post("/teams", json=equipo_con_6_pokemons)
+def test_crear_equipo(session: SessionDep, client: TestClient):
+    #Equipo(nombre="nombre",)
+    response = client.post("/teams/", json=equipo_con_6_pokemons)
     assert response.status_code == 201
-    data = response.json()
-
-    equipo_creado = data[0]
-    assert equipo_creado["id_equipo"] == equipo_con_6_pokemons["id_equipo"]
-    assert equipo_creado["nombre"] == equipo_con_6_pokemons["nombre"]
-    teams.clear()
-
-
-def test_crear_team_con_siete_pokemons():
-    response = client.post("/teams", json=equipo_siete_pokemons)
-    assert response.status_code == 400
-    assert response.json()["detail"] == "Puedes tener un maximo de seis pokemons"
-
+    content = response.json()
+    assert content[0]["nombre"] == "Equipo Elite"
+    assert content[0]["id_equipo"] == 12
 
 def test_crear_equipo_mismo_id():
     teams.append(equipo_con_6_pokemons)

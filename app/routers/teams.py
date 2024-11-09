@@ -1,8 +1,10 @@
 # incluyan clases de lo que haga falta
-from fastapi import APIRouter, HTTPException, status
-from models import Movimiento, Pokemon, Integrante_pokemon, Naturaleza, Error
-from app.models.equipos import EquipoPublic, Equipo
-from sqlmodel import select, Session
+from fastapi import APIRouter, HTTPException, status, Depends
+from models import Error
+from app.models.movimiento import Movimiento
+from app.models.equipos import Equipo, Integrante_pokemon, EquipoPublic, EquipoBase
+from app.models.naturaleza import Naturaleza
+from sqlmodel import select, Session, insert
 from app.db.database import SessionDep
 import csv
 
@@ -40,16 +42,11 @@ def show_natures() -> list[Naturaleza]:
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
-def post_team(session: SessionDep, team: Equipo) -> list[Equipo]:
-    equipo = Equipo(
-        id_equipo = team.id_equipo,
-        nombre = team.nombre,
-        pokemons_de_equipo = team.pokemons_de_equipo
-    )
-    session.add(equipo)
+def post_team(session: SessionDep, team: Equipo) -> EquipoPublic:
+    session.add(team)
     session.commit()
-    session.refresh(equipo)
-    return equipo
+    session.refresh(team)
+    return team
 
 
 @router.get("/")
