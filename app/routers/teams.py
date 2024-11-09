@@ -1,6 +1,10 @@
 # incluyan clases de lo que haga falta
 from fastapi import APIRouter, HTTPException, status
-from models import Movimiento, Pokemon, Integrante_pokemon, Equipo, Naturaleza, Error
+from models import Error
+from app.models.equipos import Equipo, EquipoPublic, Integrante_pokemon, Integrante_pokemonPublic
+from app.models.movimiento import Movimiento
+from app.models.naturaleza import Naturaleza
+from app.models.pokemon import Pokemon
 from app.models.equipos import EquipoPublic
 from sqlmodel import select, Session
 from app.db.database import SessionDep
@@ -39,8 +43,8 @@ def show_natures() -> list[Naturaleza]:
     return Naturalezas
 
 
-@router.post("/", status_code=status.HTTP_201_CREATED)
-def post_team(team: Equipo) -> list[Equipo]:
+@router.post("/{id_equipo}", responses={status.HTTP_404_NOT_FOUND: {"model": Error}})
+def post_team(session: SessionDep, grupo_id: int) -> list[Equipo]:
     for equipo_existente in teams:
         id_equipo_existente = (
             equipo_existente.get("id_equipo")
@@ -69,10 +73,10 @@ def get_teams() -> list[Equipo]:
 
 @router.get("/{id}", responses={status.HTTP_404_NOT_FOUND: {"model": Error}})
 def show_id_team(session: SessionDep, id: int) -> EquipoPublic:
-    equipo = session.exec(select(EquipoPublic).where(EquipoPublic.id_equipo == id)). first()
+    equipo = session.exec(select(Equipo).where(Equipo.id_equipo == id)). first()
     if equipo:
         return equipo
-    raise HTTPException(status_code=status.HTTP_NOT_FOUND, detail="Equipo no encontrado")
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Equipo no encontrado")
 
 
 @router.delete("/{id}")

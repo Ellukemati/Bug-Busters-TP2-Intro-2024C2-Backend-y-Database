@@ -1,4 +1,4 @@
-from jsons import (
+from test.jsons import (
     equipo_con_6_pokemons,
     equipo_mismo_id,
     equipo_siete_pokemons,
@@ -8,10 +8,11 @@ from jsons import (
     nature_3,
 )
 from fastapi.testclient import TestClient
-from app.routers.teams import teams, Naturalezas
-from models import Equipo
+from app.models.equipos import EquipoPublic, Equipo, Integrante_pokemon, Integrante_pokemonPublic
+from app.models.movimiento import Movimiento
 from main import app
-from app.routers.teams import Naturalezas
+from app.models.naturaleza import Naturaleza
+from sqlmodel import Session, select
 
 client = TestClient(app)
 
@@ -94,16 +95,23 @@ def test_get_teams():
     assert contenido == lista_vacia
 
 
-def test_buscar_team_por_id():
-    teams.append(equipo_con_6_pokemons)
+def test_buscar_team_por_id(session: Session, client: TestClient) -> None:
+    equipo = Equipo(
+        id_equipo=1,
+        nombre="nombre",
+    )
+    session.add(equipo)
+    session.commit()
     response = client.get("/teams/1")
     assert response.status_code == 200
+    content = response.json()
+    assert content["id_equipo"] == 1
 
 
-def test_buscar_equipo_no_existente():
+def test_buscar_equipo_no_existente(session: Session, client: TestClient)-> None:
     response = client.get("/teams/100")
     assert response.status_code == 404
-    assert response.json()["detail"] == "No se encontro el equipo"
+    assert response.json()["detail"] == "Equipo no encontrado"
 
 
 def test_actualizar_equipo_existente():
