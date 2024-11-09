@@ -48,7 +48,6 @@ def test_get_natures():
 
 
 def test_crear_equipo(session: SessionDep, client: TestClient):
-    #Equipo(nombre="nombre",)
     response = client.post("/teams/", json=equipo_con_6_pokemons)
     assert response.status_code == 201
     content = response.json()
