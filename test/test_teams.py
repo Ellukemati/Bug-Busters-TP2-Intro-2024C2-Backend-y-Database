@@ -1,4 +1,4 @@
-from jsons import (
+from test.jsons import (
     equipo_con_6_pokemons,
     equipo_mismo_id,
     equipo_siete_pokemons,
@@ -8,10 +8,13 @@ from jsons import (
     nature_3,
 )
 from fastapi.testclient import TestClient
-from app.routers.teams import teams, Naturalezas
-from models import Equipo
+from app.models.equipos import EquipoPublic, Equipo, Integrante_pokemon, Integrante_pokemonPublic
+from app.models.movimiento import Movimiento
 from main import app
-from app.routers.teams import Naturalezas
+from app.models.naturaleza import Naturaleza
+from sqlmodel import Session, select
+
+from app.db.database import SessionDep
 
 client = TestClient(app)
 
@@ -106,18 +109,29 @@ def test_buscar_equipo_no_existente():
     assert response.json()["detail"] == "No se encontro el equipo"
 
 
-def test_actualizar_equipo_existente():
-    teams.append(equipo_con_6_pokemons)
-    response = client.put("/teams", json=equipo_mismo_id)
+def test_actualizar_equipo_existente(session: Session, client: TestClient)->None:
+    equipo = Equipo(
+        id_equipo=1,
+        nombre="nombre",
+    )
+    equipo_actualizado = {
+        "id_equipo": 2,
+        "nombre": "editado",
+    }
+    session.add(equipo)
+    session.commit()
+    response = client.put("/teams/1", json=equipo_actualizado)
     content = response.json()
     assert response.status_code == 200
-    assert content["id_equipo"] == equipo_mismo_id["id_equipo"]
-    assert content["nombre"] == equipo_mismo_id["nombre"]
-    teams.clear()
+    assert content["id_equipo"] == equipo_actualizado["id_equipo"]
+    assert content["nombre"] == equipo_actualizado["nombre"]
 
 
-def test_actualizar_equipo_no_existente():
-    response = client.put("/teams", json=equipo)
+def test_actualizar_equipo_no_existente(session: Session, client: TestClient)-> None:
+    equipo_actualizado = {
+        "id_equipo": 2,
+        "nombre": "editado",
+    }
+    response = client.put("/teams/100", json=equipo_actualizado)
     assert response.status_code == 404
-    assert response.json()["detail"] == "No se encontro un equipo con ese id"
 

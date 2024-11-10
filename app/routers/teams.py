@@ -98,14 +98,15 @@ def borrar_equipo(id: int) -> Equipo:
         detail="No se encontro un equipo con ese id",
     )
 
-@router.put("/{id}")
-def update(session: SessionDep, padron: int, equipo_actualizado: Equipo) -> Equipo:
-    equipo = session.exec(select(Equipo).where(Equipo.id_equipo == id)). first()
-    equipo.id_equipo = equipo_actualizado.id_equipo
-    equipo.nombre = equipo_actualizado.nombre
-    equipo.pokemons_de_equipo = equipo_actualizado.pokemons_de_equipo
-    session.add(equipo)
-    session.commit()
-    session.refresh(equipo)
-    return equipo
-
+@router.put("/{id}", responses={status.HTTP_404_NOT_FOUND: {"model": Error}})
+def update(session: SessionDep, id: int, equipo_actualizado: Equipo) -> EquipoPublic:
+    equipo = session.exec(select(Equipo).where(Equipo.id_equipo == id)).first()
+    if equipo is not None:
+        equipo.id_equipo = equipo_actualizado.id_equipo
+        equipo.nombre = equipo_actualizado.nombre
+        equipo.pokemons_de_equipo = equipo_actualizado.pokemons_de_equipo
+        session.add(equipo)
+        session.commit()
+        session.refresh(equipo)
+        return equipo
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Equipo no encontrado")
