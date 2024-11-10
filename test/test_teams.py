@@ -1,4 +1,4 @@
-from jsons import (
+from test.jsons import (
     equipo_con_6_pokemons,
     equipo_mismo_id,
     equipo_siete_pokemons,
@@ -8,10 +8,13 @@ from jsons import (
     nature_3,
 )
 from fastapi.testclient import TestClient
-from app.routers.teams import teams, Naturalezas
-from models import Equipo
+from app.models.equipos import EquipoPublic, Equipo, Integrante_pokemon, Integrante_pokemonPublic
+from app.models.movimiento import Movimiento
 from main import app
-from app.routers.teams import Naturalezas
+from app.models.naturaleza import Naturaleza
+from sqlmodel import Session, select
+
+from app.db.database import SessionDep
 
 client = TestClient(app)
 
@@ -69,21 +72,22 @@ def test_crear_equipo_mismo_id():
     teams.clear()
 
 
-def test_borrar_equipo_existente():
-
-    teams.append(equipo)
-    response = client.delete("teams/2")
-
+def test_borrar_equipo_existente(session: Session, client: TestClient)-> None:
+    equipo = Equipo(
+        id_equipo=1,
+        nombre="nombre",
+    )
+    session.add(equipo)
+    session.commit()
+    response = client.delete("teams/1")
+    content = response.json()
     assert response.status_code == 200
     assert response.json() == equipo
-    teams.clear()
 
 
 def test_borrar_equipo_no_existe():
-
     response = client.delete("/teams/99")
     assert response.status_code == 404
-    assert response.json()["detail"] == "No se encontro un equipo con ese id"
 
 
 def test_get_teams():

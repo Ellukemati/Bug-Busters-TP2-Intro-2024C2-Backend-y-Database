@@ -84,10 +84,15 @@ def show_id_team(id: int) -> Equipo:
 
 @router.delete("/{id}", responses={status.HTTP_404_NOT_FOUND: {"model": Error}})
 def borrar_equipo(session: SessionDep, id: int) -> Equipo:
-    equipo = session.exec(select(Equipo).where(Equipo.id_equipo == id)). first()
-    session.delete(equipo)
-    session.commit()
-    return equipo
+    equipo = session.exec(select(Equipo).where(Equipo.id_equipo == id)).first()
+    if equipo is not None:
+        session.delete(equipo)
+        session.commit()
+        return equipo
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail="El equipo no existe",
+    )
 
 @router.put("/")
 def update(equipo_actualizado: Equipo) -> Equipo:
@@ -100,8 +105,5 @@ def update(equipo_actualizado: Equipo) -> Equipo:
         if id_equipo_existente == equipo_actualizado.id_equipo:
             teams[indice] = equipo_actualizado
             return equipo_actualizado
-    raise HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND,
-        detail="No se encontro un equipo con ese id",
-    )
+    
 
