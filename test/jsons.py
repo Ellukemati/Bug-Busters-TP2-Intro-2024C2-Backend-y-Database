@@ -1,5 +1,3 @@
-from models import Movimiento
-
 # ---------------------- JSON NATURES ----------------
 nature_1 = {
     "id": 1,
@@ -1735,3 +1733,96 @@ movimientos_infernape = [{'accuracy': 100,
   'pp': 30,
   'probabilidad_efecto': None,
   'tipo': 'Normal'}]
+
+# ------------------------ JSONS MOVIMIENTOS -----------------------------
+movimiento_id_176 = {
+  "accuracy": None,
+  "nombre": "Conversión2",
+  "generacion": "Generación 2",
+  "efecto": "Changes the user's type to a random type either resistant or immune to the last move used against it.",
+  "id": 176,
+  "power": None,
+  "tipo": "Normal",
+  "pp": 30,
+  "categoria": "estado",
+  "probabilidad_efecto": None
+}
+pokemons_que_aprenden_176 = [
+  {
+    "url_imagen": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/137.png",
+    "habilidad_3": "Cálculo Final",
+    "id_evolucion_siguiente": 233,
+    "nombre": "porygon",
+    "estadistica_hp": 65,
+    "id": 137,
+    "altura": 8,
+    "estadistica_attack": 60,
+    "peso": 365,
+    "estadistica_defense": 70,
+    "tipo_1": "Normal",
+    "estadistica_special_attack": 85,
+    "tipo_2": None,
+    "estadistica_special_defense": 75,
+    "habilidad_1": "Rastro",
+    "estadistica_speed": 40,
+    "habilidad_2": "Descarga",
+    "id_evolucion_anterior": None
+  },
+  {
+    "url_imagen": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/233.png",
+    "habilidad_3": "Cálculo Final",
+    "id_evolucion_siguiente": 474,
+    "nombre": "porygon2",
+    "estadistica_hp": 85,
+    "id": 233,
+    "altura": 6,
+    "estadistica_attack": 80,
+    "peso": 325,
+    "estadistica_defense": 90,
+    "tipo_1": "Normal",
+    "estadistica_special_attack": 105,
+    "tipo_2": None,
+    "estadistica_special_defense": 95,
+    "habilidad_1": "Rastro",
+    "estadistica_speed": 60,
+    "habilidad_2": "Descarga",
+    "id_evolucion_anterior": 137
+  },
+  {
+    "url_imagen": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/474.png",
+    "habilidad_3": "Cálculo Final",
+    "id_evolucion_siguiente": None,
+    "nombre": "porygon-z",
+    "estadistica_hp": 85,
+    "id": 474,
+    "altura": 9,
+    "estadistica_attack": 80,
+    "peso": 340,
+    "estadistica_defense": 70,
+    "tipo_1": "Normal",
+    "estadistica_special_attack": 135,
+    "tipo_2": None,
+    "estadistica_special_defense": 75,
+    "habilidad_1": "Adaptable",
+    "estadistica_speed": 90,
+    "habilidad_2": "Descarga",
+    "id_evolucion_anterior": 233
+  }
+]
+relaciones = [
+    {"pokemon_id": 474, "movimiento_id": 176},
+    {"pokemon_id": 233, "movimiento_id": 176},
+    {"pokemon_id": 137, "movimiento_id": 176}
+]
+movimiento_sin_pokemones_que_lo_aprendan = {
+  "accuracy": 100,
+  "nombre": "Carga Oscura",
+  "generacion": "Generación 3",
+  "efecto": "Has an increased chance for a critical hit in Hyper Mode.",
+  "id": 10001,
+  "power": 55,
+  "tipo": "Oscuro",
+  "pp": None,
+  "categoria": "físico",
+  "probabilidad_efecto": None
+}
