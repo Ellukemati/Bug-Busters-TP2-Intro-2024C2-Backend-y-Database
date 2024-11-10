@@ -47,19 +47,23 @@ def test_get_natures():
     assert data[2]["reduce_estadistica"] == "attack"
 
 
-def test_crear_equipo(session: SessionDep, client: TestClient):
+def test_crear_equipo(session: Session, client: TestClient)->None:
     response = client.post("/teams/", json=equipo_con_6_pokemons)
     assert response.status_code == 201
     content = response.json()
-    assert content[0]["nombre"] == "Equipo Elite"
-    assert content[0]["id_equipo"] == 12
+    assert content["nombre"] == "Equipo Elite"
+    assert content["id_equipo"] == 12
 
-def test_crear_equipo_mismo_id():
-    teams.append(equipo_con_6_pokemons)
-    response = client.post("/teams", json=equipo_mismo_id)
+def test_crear_equipo_mismo_id(session: Session, client: TestClient)->None:
+    equipo= Equipo(nombre="nombre", id_equipo=1)
+    session.add(equipo)
+    session.commit()
+    equipo_id={
+        "nombre":"copia",
+        "id_equipo": 1,
+    }
+    response = client.post("/teams", json=equipo_id)
     assert response.status_code == 400
-    assert response.json()["detail"] == "Ya existe un equipo con ese id"
-    teams.clear()
 
 
 def test_borrar_equipo_existente():

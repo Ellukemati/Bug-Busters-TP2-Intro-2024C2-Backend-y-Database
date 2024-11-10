@@ -43,10 +43,17 @@ def show_natures() -> list[Naturaleza]:
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 def post_team(session: SessionDep, team: Equipo) -> EquipoPublic:
-    session.add(team)
-    session.commit()
-    session.refresh(team)
-    return team
+    equipo = session.exec(select(Equipo).where(Equipo.id_equipo == team.id_equipo)).first()
+    if equipo is None:
+        session.add(team)
+        session.commit()
+        session.refresh(team)
+        return team
+    raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Ya existe un equipo con ese id",
+            )
+
 
 
 @router.get("/")
