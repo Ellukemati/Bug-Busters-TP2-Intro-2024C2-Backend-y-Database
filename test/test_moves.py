@@ -4,7 +4,7 @@ from app.models.movimiento import Movimiento
 from app.models.pokemon import Pokemon
 from app.models.pokemonMovimiento import PokemonMovimiento
 from sqlmodel import Session
-from test.jsons import movimiento_id_176,pokemons_que_aprenden_176,relaciones, movimiento_sin_pokemones_que_lo_aprendan
+from test.jsons import movimiento_id_176,pokemons_que_aprenden_176,relaciones, movimiento_sin_pokemones_que_lo_aprendan,movimiento_existente_id_190,movimiento_existente_id_46
 
 client = TestClient(app)
 
@@ -43,33 +43,13 @@ def test_get_moves_id_pokemon_inexistente():
 
 
 def test_obtener_movimiento_existente(session: Session, client: TestClient):
-    movimiento_existente = Movimiento(
-        id=190,
-        nombre="Pulpocañón",
-        tipo="Agua",
-        power=65,
-        accuracy=85,
-        pp=10,
-        generacion="Generation 2",
-        categoria="especial",
-        efecto="Has a $effect_chance% chance to lower the target's accuracy by one stage.",
-        probabilidad_efecto=50,
-    )
-    session.add(movimiento_existente)
+    movimiento = Movimiento(**movimiento_existente_id_190)
+    session.add(movimiento)
     session.commit()
     response = client.get("moves/190")
     content = response.json()
     assert response.status_code == 200
-    assert content["id"] == movimiento_existente.id
-    assert content["nombre"] == movimiento_existente.nombre
-    assert content["tipo"] == movimiento_existente.tipo
-    assert content["power"] == movimiento_existente.power
-    assert content["accuracy"] == movimiento_existente.accuracy
-    assert content["pp"] == movimiento_existente.pp
-    assert content["generacion"] == movimiento_existente.generacion
-    assert content["categoria"] == movimiento_existente.categoria
-    assert content["efecto"] == movimiento_existente.efecto
-    assert content["probabilidad_efecto"] == movimiento_existente.probabilidad_efecto
+    assert content == movimiento_existente_id_190
 
 
 def test_obtener_movimento_no_existente(session: Session, client: TestClient):
@@ -77,34 +57,12 @@ def test_obtener_movimento_no_existente(session: Session, client: TestClient):
     assert response.status_code == 404
 
 
-def test_obtener_movimiento_existente_con_casillas_vacias(
-    session: Session, client: TestClient
-):
-    movimiento_existente = Movimiento(
-        id=46,
-        nombre="Rugido",
-        tipo="Normal",
-        power=None,
-        accuracy=None,
-        pp=20,
-        generacion="Generation 1",
-        categoria="estado",
-        efecto="Immediately ends wild battles.  Forces trainers to switch Pokémon.",
-        probabilidad_efecto=None,
-    )
-    session.add(movimiento_existente)
+def test_obtener_movimiento_existente_con_casillas_vacias(session: Session, client: TestClient):
+    movimiento = Movimiento(**movimiento_existente_id_46)
+    session.add(movimiento)
     session.commit()
 
     response = client.get("moves/46")
     content = response.json()
     assert response.status_code == 200
-    assert content["id"] == movimiento_existente.id
-    assert content["nombre"] == movimiento_existente.nombre
-    assert content["tipo"] == movimiento_existente.tipo
-    assert content["power"] == movimiento_existente.power
-    assert content["accuracy"] == movimiento_existente.accuracy
-    assert content["pp"] == movimiento_existente.pp
-    assert content["generacion"] == movimiento_existente.generacion
-    assert content["categoria"] == movimiento_existente.categoria
-    assert content["efecto"] == movimiento_existente.efecto
-    assert content["probabilidad_efecto"] == movimiento_existente.probabilidad_efecto
+    assert content == movimiento_existente_id_46

@@ -1733,8 +1733,31 @@ movimientos_infernape = [{'accuracy': 100,
   'pp': 30,
   'probabilidad_efecto': None,
   'tipo': 'Normal'}]
-
-# ------------------------ JSONS MOVIMIENTOS -----------------------------
+# ------------------------ JSONS MOVIMIENTO -----------------------------
+movimiento_existente_id_190 = {
+    "id": 190,
+    "nombre": "Pulpocañón",
+    "tipo": "Agua",
+    "power": 65,
+    "accuracy": 85,
+    "pp": 10,
+    "generacion": "Generation 2",
+    "categoria": "especial",
+    "efecto": "Has a $effect_chance% chance to lower the target's accuracy by one stage.",
+    "probabilidad_efecto": 50
+}
+movimiento_existente_id_46 = {
+    "id": 46,
+    "nombre": "Rugido",
+    "tipo": "Normal",
+    "power": None,
+    "accuracy": None,
+    "pp": 20,
+    "generacion": "Generation 1",
+    "categoria": "estado",
+    "efecto": "Immediately ends wild battles.  Forces trainers to switch Pokémon.",
+    "probabilidad_efecto": None
+}
 movimiento_id_176 = {
   "accuracy": None,
   "nombre": "Conversión2",
