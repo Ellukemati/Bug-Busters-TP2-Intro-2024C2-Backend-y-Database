@@ -29,7 +29,7 @@ def cargar_movimientos(session: Session):
         for row in datos_csv:
             movimiento = Movimiento(
                 id=int(row["id"]),
-                nombre=buscar_por_id(row["id"], "move_id", ESPANIOL, MOVE_NAMES),
+                nombre=buscar_por_id(row["id"], "name", ESPANIOL, MOVE_NAMES),
                 tipo=buscar_por_id(row["type_id"], "name", ESPANIOL, TYPE_NAMES),
                 power=(
                     int(row["power"]) if row["power"].strip() else None
