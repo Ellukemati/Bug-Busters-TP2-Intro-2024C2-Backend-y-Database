@@ -18,7 +18,6 @@ async def lifespan(app: FastAPI):
     init_db()
     logger.info("Inicialización completa.")
     yield
-
     logger.info("Aplicación cerrándose.")
 
 
