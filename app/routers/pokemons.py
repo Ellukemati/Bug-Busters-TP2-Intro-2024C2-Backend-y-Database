@@ -1,6 +1,11 @@
 from fastapi import APIRouter, HTTPException, status
-from models import Pokemon, Movimiento, Naturaleza
 from app.routers.funciones import buscar_movimiento
+from app.models.error import Error
+from models import Pokemon
+from app.models.pokemon import Pokemon as PokemonDB
+from app.models.movimiento import Movimiento
+from sqlmodel import select
+from app.db.database import SessionDep
 import csv
 
 router = APIRouter()
@@ -198,23 +203,32 @@ def obtener_pokemon_por_id(id: int):
             return pokemon
     raise HTTPException(status_code=404, detail="Pokémon no encontrado.")
 
-
 @router.get("/{id}/moves", response_model=list[Movimiento])
-def obtener_movimientos_pokemon(id: int) -> list[Movimiento]:
-    movimientos = []
-    pokemon = None
-    for poke in POKEMON_DATA:
-        if poke.pokemon_id == id:
-            pokemon = poke
-            break
-    if not pokemon:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Pokémon no encontrado."
-        )
-    for movimiento_id in pokemon.movimientos_ids:
-        movimiento = buscar_movimiento(movimiento_id)
-        movimientos.append(movimiento)
-    return movimientos
+def obtener_movimientos_pokemon(session: SessionDep,id: int) -> list[Movimiento]:
+    pokemon = session.exec(select(PokemonDB).where(PokemonDB.id == id)).first()
+        
+    if pokemon:
+        movimientos = pokemon.posibles_movimientos
+        return movimientos
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND, detail="Pokémon no encontrado."
+    )
+# @router.get("/{id}/moves", response_model=list[Movimiento])
+# def obtener_movimientos_pokemon(session: SessionDep,id: int) -> list[Movimiento]:
+#     movimientos = []
+#     pokemon = None
+#     for poke in POKEMON_DATA:
+#         if poke.pokemon_id == id:
+#             pokemon = poke
+#             break
+#     if not pokemon:
+#         raise HTTPException(
+#             status_code=status.HTTP_404_NOT_FOUND, detail="Pokémon no encontrado."
+#         )
+#     for movimiento_id in pokemon.movimientos_ids:
+#         movimiento = buscar_movimiento(movimiento_id)
+#         movimientos.append(movimiento)
+#     return movimientos
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
