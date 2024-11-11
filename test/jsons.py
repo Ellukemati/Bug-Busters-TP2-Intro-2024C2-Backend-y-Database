@@ -1,3 +1,4 @@
+
 from models import Movimiento
 
 from app.models.pokemon import Pokemon, PokemonBase
@@ -1736,6 +1737,7 @@ movimiento_existente_id_46 = {
     "categoria": "estado",
     "efecto": "Immediately ends wild battles.  Forces trainers to switch Pokémon.",
     "probabilidad_efecto": None
+
 }
 movimiento_id_176 = {
   "accuracy": None,
@@ -1828,5 +1830,4 @@ movimiento_sin_pokemones_que_lo_aprendan = {
   "categoria": "físico",
   "probabilidad_efecto": None
 }
-
 

@@ -1,8 +1,10 @@
 from main import app
 from fastapi.testclient import TestClient
 from app.models.movimiento import Movimiento
+from test.jsons import movimiento_existente_id_190,movimiento_existente_id_46
 from app.models.pokemon import Pokemon
 from app.models.pokemonMovimiento import PokemonMovimiento
+
 from sqlmodel import Session
 from test.jsons import movimiento_id_176,pokemons_que_aprenden_176,relaciones, movimiento_sin_pokemones_que_lo_aprendan,movimiento_existente_id_190,movimiento_existente_id_46
 

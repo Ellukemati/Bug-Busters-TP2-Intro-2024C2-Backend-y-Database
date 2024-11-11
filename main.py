@@ -14,7 +14,6 @@ app.include_router(api_router)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-
     logger.info("Inicializando la base de datos y cargando datos si es necesario...")
     init_db()
     logger.info("Inicialización completa.")
