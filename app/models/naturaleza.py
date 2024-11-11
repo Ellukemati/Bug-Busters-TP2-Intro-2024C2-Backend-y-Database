@@ -6,7 +6,10 @@ class NaturalezaBase(SQLModel):
     reduce_estadistica: str
 
 class Naturaleza(NaturalezaBase, table=True):
-    id: int = Field(primary_key=True)
+    id: int = Field(primary_key=True) 
 
-class NaturalezaCreate(NaturalezaBase):
-    pass
+class NaturalezaPublic(NaturalezaBase):
+    id: int
+    nombre: str
+    aumenta_estadistica: str
+    reduce_estadistica: str
