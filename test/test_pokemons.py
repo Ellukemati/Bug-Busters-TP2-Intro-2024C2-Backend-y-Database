@@ -1,7 +1,16 @@
 from fastapi.testclient import TestClient
+from app.routers.pokemons import POKEMON_DATA
+from app.models.pokemon import Pokemon
 from main import app
+from jsons import (
+    infernape_mock,
+    movimientos_infernape,
+    infernape_mock_post,
+    infernape_mock_id1,
+)
+import pytest
 from sqlmodel import Session
-
+from app.db.database import SessionDep
 from app.models.pokemon import Pokemon
 from app.models.movimiento import Movimiento
 from app.models.pokemonMovimiento import PokemonMovimiento
@@ -15,14 +24,7 @@ from test.jsons import (
     infernape_json
     )
 
-
 client = TestClient(app)
-
-# def test_get_pokemons():
-#     respuesta = client.get("/pokemons/")
-#     contenido = respuesta.json()
-#     assert respuesta.status_code == 200
-#     assert contenido[0]["id"] == 1
 
 
 def test_get_pokemon_encontrado(session: Session, client: TestClient):
@@ -35,6 +37,7 @@ def test_get_pokemon_encontrado(session: Session, client: TestClient):
 def test_get_pokemon_no_encontrado(session: Session, client: TestClient):
     response = client.get("/pokemons/0")  # ID 0 no existe.
     assert response.status_code == 404
+
 
 
 def test_get_pokemon_movimientos_encontrado(session: Session, client: TestClient):
@@ -56,6 +59,7 @@ def test_get_pokemon_movimientos_no_encontrado(session: Session, client: TestCli
     response = client.get("/pokemons/0/moves")  # ID 0 no existe
     assert response.status_code == 404
     assert response.json() == {"detail": "Pokémon no encontrado."}
+
 
 
 def test_borrar_un_pokemon(session: Session, client: TestClient):

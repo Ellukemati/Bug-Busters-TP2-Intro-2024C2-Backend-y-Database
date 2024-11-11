@@ -6,7 +6,6 @@ from sqlmodel import select
 from app.db.database import SessionDep
 
 
-
 router = APIRouter()
 
 
@@ -30,6 +29,7 @@ def generar_lista(lista):
     return lista_contenido_limitado
 
 
+
 @router.get("/")
 def get_pokemon() -> list:
     return generar_lista(POKEMON_DATA)
@@ -43,18 +43,6 @@ def get_pokemon_by_id(session: SessionDep, id: int) -> Pokemon:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Pokémon no encontrado"
         )
-
-
-@router.get("/{id}/moves", response_model=list[Movimiento])
-def obtener_movimientos_pokemon(session: SessionDep,id: int) -> list[Movimiento]:
-    pokemon = session.exec(select(Pokemon).where(Pokemon.id == id)).first()
-        
-    if pokemon:
-        movimientos = pokemon.posibles_movimientos
-        return movimientos
-    raise HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND, detail="Pokémon no encontrado."
-    )
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
