@@ -29,10 +29,22 @@ def generar_lista(lista):
     return lista_contenido_limitado
 
 
-
 @router.get("/")
 def get_pokemon() -> list:
     return generar_lista(POKEMON_DATA)
+
+
+@router.get("/{id}/moves", response_model=list[Movimiento])
+def obtener_movimientos_pokemon(session: SessionDep, id: int) -> list[Movimiento]:
+    pokemon = session.exec(select(Pokemon).where(Pokemon.id == id)).first()
+
+    if pokemon:
+        movimientos = pokemon.posibles_movimientos
+        return movimientos
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND, detail="Pokémon no encontrado."
+    )
+
 
 @router.get("/{id}")
 def get_pokemon_by_id(session: SessionDep, id: int) -> Pokemon:
