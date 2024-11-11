@@ -1,4 +1,5 @@
 from models import Movimiento
+
 from app.models.pokemon import Pokemon, PokemonBase
 
 # ---------------------- JSON NATURES ----------------
@@ -684,6 +685,33 @@ equipo = {
 }
 
 # ------------------------ JSONS POKEMONS -----------------------------
+movimientos_ids_infernape = [
+10,14,15,43,46,52,53,63,70,76,83,89, 91, 92, 104, 126, 154, 156, 157, 164, 172, 182, 183, 203, 207, 213, 214, 216, 218, 231, 237, 241, 249, 259, 261, 263, 264, 269, 280, 290, 307, 315, 317, 332, 339, 347, 363, 364, 369, 370, 374, 386, 394,398,411,416,421,431,444,445,446,447,7,9,129,173,189,205,257,270,283,410,441,29, 67,272,468,488,490,496,510,512,514,519,523,526,343,530,590,612,673]
+
+
+relaciones_infernape =  [{"pokemon_id": 392, "movimiento_id": movimiento_id} for movimiento_id in movimientos_ids_infernape]
+
+infernape_json = {
+  "habilidad_2": "Puño Férreo",
+  "id_evolucion_anterior": 391,
+  "url_imagen": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/392.png",
+  "habilidad_3": None,
+  "id_evolucion_siguiente": None,
+  "nombre": "infernape",
+  "estadistica_hp": 76,
+  "id": 392,
+  "altura": 12,
+  "estadistica_attack": 104,
+  "peso": 550,
+  "estadistica_defense": 71,
+  "tipo_1": "Fuego",
+  "estadistica_special_attack": 104,
+  "tipo_2": "Lucha",
+  "estadistica_special_defense": 71,
+  "habilidad_1": "Mar Llamas",
+  "estadistica_speed": 108
+}
+
 
 infernape_mock = Pokemon(
     nombre="infernape",
@@ -1800,4 +1828,5 @@ movimiento_sin_pokemones_que_lo_aprendan = {
   "categoria": "físico",
   "probabilidad_efecto": None
 }
+
 

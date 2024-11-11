@@ -1,9 +1,10 @@
 from fastapi import APIRouter, HTTPException, status
-from app.models.pokemon import Pokemon, Movimiento, PokemonBase
-from app.routers.funciones import buscar_movimiento
-import csv
-from app.db.database import SessionDep
+from app.models.error import Error
+from app.models.pokemon import Pokemon, PokemonBase
+from app.models.movimiento import Movimiento
 from sqlmodel import select
+from app.db.database import SessionDep
+
 
 router = APIRouter()
 
@@ -28,6 +29,11 @@ def generar_lista(lista):
     return lista_contenido_limitado
 
 
+
+@router.get("/")
+def get_pokemon() -> list:
+    return generar_lista(POKEMON_DATA)
+
 @router.get("/{id}")
 def get_pokemon_by_id(session: SessionDep, id: int) -> Pokemon:
     pokemon = session.exec(select(Pokemon).where(Pokemon.id == id)).first()
@@ -37,15 +43,6 @@ def get_pokemon_by_id(session: SessionDep, id: int) -> Pokemon:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Pokémon no encontrado"
         )
-
-
-# @router.get("/")
-# def get_pokemon() -> list:
-#   return generar_lista(POKEMON_DATA)
-
-
-# @router.get("/{id}/moves", response_model=list[Movimiento])
-# def obtener_movimientos_pokemon(id: int) -> list[Movimiento]:
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
