@@ -1,58 +1,47 @@
 from main import app
-from app.routers.pokemons import lista_contenido_limitado
 from fastapi.testclient import TestClient
 from app.models.movimiento import Movimiento
 from test.jsons import movimiento_existente_id_190,movimiento_existente_id_46
+from app.models.pokemon import Pokemon
+from app.models.pokemonMovimiento import PokemonMovimiento
+
 from sqlmodel import Session
+from test.jsons import movimiento_id_176,pokemons_que_aprenden_176,relaciones, movimiento_sin_pokemones_que_lo_aprendan,movimiento_existente_id_190,movimiento_existente_id_46
 
 client = TestClient(app)
 
 
-def test_get_moves_id_pokemon_3():
-    respuesta = client.get("/moves/3/pokemon")
-    contenido = respuesta.json()
-    assert respuesta.status_code == 200
-    assert contenido[0]["id"] == 35
-    assert contenido[1]["nombre"] == "clefable"
-    assert (
-        contenido[0]["imagen"]
-        == "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/35.png"
-    )
-    assert contenido[0]["tipos"][0] == "Hada"
+def test_get_moves_id_pokemon_176(session: Session, client: TestClient):
+    movimiento = Movimiento(**movimiento_id_176)
+    pokemones = [Pokemon(**data) for data in pokemons_que_aprenden_176]
+    pokemon_movimientos = [PokemonMovimiento(**data) for data in relaciones]
 
-
-def test_get_moves_id_pokemon_176():
+    session.add(movimiento)
+    session.add_all(pokemones)
+    session.add_all(pokemon_movimientos)
+    session.commit()
     respuesta = client.get("/moves/176/pokemon")
     contenido = respuesta.json()
     assert respuesta.status_code == 200
     assert len(contenido) == 3
-    assert contenido[0]["id"] == 137
-    assert contenido[1]["id"] == 233
-    assert contenido[2]["id"] == 474
+    assert contenido[0] == pokemons_que_aprenden_176[2]
+    assert contenido[1] == pokemons_que_aprenden_176[1]
+    assert contenido[2] == pokemons_que_aprenden_176[0]
 
 
-def test_get_moves_id_pokemon_10001():
+def test_get_moves_id_pokemon_10001(session: Session, client: TestClient):
+    movimiento = Movimiento(**movimiento_sin_pokemones_que_lo_aprendan)
+    session.add(movimiento)
+    session.commit()
     respuesta = client.get("/moves/10001/pokemon")
     contenido = respuesta.json()
     assert respuesta.status_code == 200
     assert len(contenido) == 0
 
 
-def test_get_moves_id_pokemon_vacio():
+def test_get_moves_id_pokemon_inexistente():
     respuesta = client.get("/moves/80000/pokemon")
     assert respuesta.status_code == 404
-
-
-def test_get_moves_id_pokemon_vacio_2():
-    respuesta = client.get("/moves/900/pokemon")
-    assert respuesta.status_code == 404
-
-
-def test_get_moves_id_pokemon_176():
-    respuesta = client.get("/moves/25/pokemon")
-    contenido = respuesta.json()
-    assert respuesta.status_code == 200
-    assert len(contenido) == 233
 
 
 def test_obtener_movimiento_existente(session: Session, client: TestClient):
