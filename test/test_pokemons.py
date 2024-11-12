@@ -1,9 +1,7 @@
 from fastapi.testclient import TestClient
-from app.models.pokemon import Pokemon
 from main import app
 import pytest
 from sqlmodel import Session
-from app.db.database import SessionDep
 from app.models.pokemon import Pokemon
 from app.models.movimiento import Movimiento
 from app.models.pokemonMovimiento import PokemonMovimiento
@@ -18,6 +16,33 @@ from test.jsons import (
 )
 
 client = TestClient(app)
+
+
+def test_get_pokemon_encontrados(session: Session, client: TestClient):
+    # Hago un mock más para probarlo con 2
+    greninja_mock = Pokemon(id=658, nombre="greninja", url_imagen="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/658.png",
+                            altura=15, peso=400, tipo_1="Agua", tipo_2="Siniestro", habilidad_1="Torrente", habilidad_2="Mutatipo", habilidad_3=None,
+                            estadistica_hp=72, estadistica_attack=95, estadistica_defense=67, estadistica_special_attack=103,
+                            estadistica_special_defense=71, estadistica_speed=122, evolucion_anterior=657, evolucion_siguiente=None)
+
+    session.add_all([infernape_mock, greninja_mock])
+    session.commit()
+
+    response = client.get("/pokemons")
+    assert response.status_code == 200
+
+    # Chequeo que los datos devueltos sean de todos los Pokémon cargados
+    content = response.json()
+    assert len(content) == 2
+    assert content[0]["nombre"] == "infernape"
+    assert content[1]["nombre"] == "greninja"
+
+
+def test_get_pokemon_no_encontrados(session: Session, client: TestClient):
+    response = client.get("/pokemons") # No hay Pokémon en el mock de la db.
+
+    assert response.status_code == 404
+    assert response.json() == {"detail": "No se encontraron Pokémon en la base de datos."}
 
 
 def test_get_pokemon_encontrado(session: Session, client: TestClient):
