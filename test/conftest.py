@@ -2,13 +2,13 @@ from fastapi.testclient import TestClient
 from collections.abc import Generator
 from main import app
 import pytest
-
-
 from sqlmodel import Session, SQLModel, create_engine
 from sqlmodel.pool import StaticPool
 
 
 from app.db.database import get_db
+
+
 
 
 @pytest.fixture(scope="module")

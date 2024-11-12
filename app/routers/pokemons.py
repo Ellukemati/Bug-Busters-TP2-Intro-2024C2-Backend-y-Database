@@ -1,24 +1,15 @@
 from fastapi import APIRouter, HTTPException, status
-from app.models.pokemon import Pokemon
+from app.models.error import Error
+from app.models.pokemon import Pokemon, PokemonBase
 from app.models.movimiento import Movimiento
-from app.models.naturaleza import Naturaleza
-from app.routers.funciones import buscar_movimiento
-import csv
+from sqlmodel import select
+from app.db.database import SessionDep
+
 
 router = APIRouter()
 
-POKEMON_CSV = "pokemon.csv"
-POKEMON_STATS_CSV = "pokemon_stats.csv"
-POKEMON_TYPES_CSV = "pokemon_types.csv"
-TYPE_NAMES_CSV = "type_names.csv"
-POKEMON_ABILITIES_CSV = "pokemon_abilities.csv"
-ABILITY_NAMES_CSV = "ability_names.csv"
-POKEMON_EVOLUTIONS_CSV = "pokemon_evolutions.csv"
-POKEMON_MOVES_CSV = "pokemon_moves.csv"
 
 POKEMON_DATA: list[Pokemon] = []  # Lista "Base de datos", con todos los Pokémon.
-
-
 
 
 lista_contenido_limitado = []
@@ -38,78 +29,69 @@ def generar_lista(lista):
     return lista_contenido_limitado
 
 
-def get_pokemon_para_test() -> list:  # {
-    return generar_lista(
-        POKEMON_DATA
-    )  # para asegurar funcionalidad del test get moves/id/pokemon
-
-
-get_pokemon_para_test()  # }
-
-
-@router.get("/{id}", response_model=Pokemon)
-def get_pokemon_by_id(id: int):
-    for pokemon in POKEMON_DATA:
-        if pokemon.pokemon_id == id:
-            return pokemon
-    raise HTTPException(status_code=404, detail="Pokémon no encontrado.")
-
-
 @router.get("/")
 def get_pokemon() -> list:
     return generar_lista(POKEMON_DATA)
 
 
-@router.get("/{id}", response_model=Pokemon)
-def obtener_pokemon_por_id(id: int):
-    for pokemon in POKEMON_DATA:
-        if pokemon.pokemon_id == id:
-            return pokemon
-    raise HTTPException(status_code=404, detail="Pokémon no encontrado.")
-
-
 @router.get("/{id}/moves", response_model=list[Movimiento])
-def obtener_movimientos_pokemon(id: int) -> list[Movimiento]:
-    movimientos = []
-    pokemon = None
-    for poke in POKEMON_DATA:
-        if poke.pokemon_id == id:
-            pokemon = poke
-            break
-    if not pokemon:
+def obtener_movimientos_pokemon(session: SessionDep, id: int) -> list[Movimiento]:
+    pokemon = session.exec(select(Pokemon).where(Pokemon.id == id)).first()
+
+    if pokemon:
+        movimientos = pokemon.posibles_movimientos
+        return movimientos
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND, detail="Pokémon no encontrado."
+    )
+
+
+@router.get("/{id}")
+def get_pokemon_by_id(session: SessionDep, id: int) -> Pokemon:
+    pokemon = session.exec(select(Pokemon).where(Pokemon.id == id)).first()
+    if pokemon:
+        return pokemon
+    else:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Pokémon no encontrado."
+            status_code=status.HTTP_404_NOT_FOUND, detail="Pokémon no encontrado"
         )
-    for movimiento_id in pokemon.movimientos_ids:
-        movimiento = buscar_movimiento(movimiento_id)
-        movimientos.append(movimiento)
-    return movimientos
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
-def crear_pokemon(pokemon: Pokemon) -> Pokemon:
-    for a in POKEMON_DATA:
-        pokemon_id = a.get("pokemon_id") if isinstance(a, dict) else a.pokemon_id
-        if pokemon_id == pokemon.pokemon_id:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Ya existe un pokemon con ese id",
-            )
-    POKEMON_DATA.append(pokemon)
+def crear_pokemon(session: SessionDep, pokemon_nuevo: PokemonBase) -> PokemonBase:
+    pokemon = Pokemon(
+        nombre=pokemon_nuevo.nombre,
+        url_imagen=pokemon_nuevo.url_imagen,
+        altura=pokemon_nuevo.altura,
+        peso=pokemon_nuevo.peso,
+        tipo_1=pokemon_nuevo.tipo_1,
+        tipo_2=pokemon_nuevo.tipo_2,
+        habilidad_1=pokemon_nuevo.habilidad_1,
+        habilidad_2=pokemon_nuevo.habilidad_2,
+        habilidad_3=pokemon_nuevo.habilidad_3,
+        estadistica_hp=pokemon_nuevo.estadistica_hp,
+        estadistica_attack=pokemon_nuevo.estadistica_attack,
+        estadistica_defense=pokemon_nuevo.estadistica_defense,
+        estadistica_special_attack=pokemon_nuevo.estadistica_special_attack,
+        estadistica_special_defense=pokemon_nuevo.estadistica_special_defense,
+        estadistica_speed=pokemon_nuevo.estadistica_speed,
+        id_evolucion_anterior=pokemon_nuevo.id_evolucion_anterior,
+        id_evolucion_siguiente=pokemon_nuevo.id_evolucion_siguiente,
+    )
+    session.add(pokemon)
+    session.commit()
+    session.refresh(pokemon)
     return pokemon
 
 
 @router.delete("/{id}")
-def borrar_pokemon(id: int):
-    for indice, pokemon_existente in enumerate(POKEMON_DATA):
-        id_pokemon_existente = (
-            pokemon_existente.get("pokemon_id")
-            if isinstance(pokemon_existente, dict)
-            else pokemon_existente.pokemon_id
-        )
-        if id_pokemon_existente == id:
-            POKEMON_DATA.remove(pokemon_existente)
-            return pokemon_existente
+def borrar_pokemon(session: SessionDep, id: int) -> Pokemon:
+    pokemon_eliminar = session.exec(select(Pokemon).where(Pokemon.id == id)).first()
+    if pokemon_eliminar:
+        session.delete(pokemon_eliminar)
+        session.commit()
+        return pokemon_eliminar
+
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
         detail="No se encontro ese id en nuestros pokemons",

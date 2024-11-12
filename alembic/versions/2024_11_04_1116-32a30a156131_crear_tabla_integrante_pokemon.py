@@ -27,7 +27,7 @@ def upgrade() -> None:
         sa.Column("naturaleza_id", sa.Integer(), nullable=False),
         sa.ForeignKeyConstraint(
             ["pokemon_id"],
-            ["pokemon.id_repetido"],
+            ["pokemon.id"],
         ),
         sa.ForeignKeyConstraint(
             ["naturaleza_id"],
