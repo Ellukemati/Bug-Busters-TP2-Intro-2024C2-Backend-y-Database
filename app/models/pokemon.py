@@ -23,6 +23,6 @@ class PokemonBase(SQLModel):
 
 
 class Pokemon(PokemonBase, table=True):
-    id: int = Field(primary_key=True, foreign_key="integrante_pokemon.pokemon_id")
+    id: int = Field(primary_key=True)
     posibles_movimientos: list["Movimiento"] = Relationship(back_populates="pokemon_que_lo_aprenden", link_model=PokemonMovimiento)
 
