@@ -86,11 +86,21 @@ def test_get_natures(session: Session, client: TestClient) -> None:
 
 
 
-def test_get_teams(session: Session, client: TestClient) -> None:
+def test_get_teams_vacio(session: Session, client: TestClient) -> None:
     respuesta = client.get("/teams/")
     contenido = respuesta.json()
     assert respuesta.status_code == 200
     assert len(contenido) == 0
+
+def test_get_teams(session: Session, client: TestClient)-> None:
+    equipo = Equipo(id_equipo = 1, nombre="nombre", pokemons_de_equipo=[])
+    session.add(equipo)
+    session.commit()
+    respuesta = client.get("/teams/")
+    contenido = respuesta.json()
+    assert respuesta.status_code == 200
+    assert len(contenido) == 1
+
 
 # def test_buscar_team_por_id():
 #     teams.append(equipo_con_6_pokemons)
