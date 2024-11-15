@@ -1,15 +1,20 @@
 from test.jsons import (
-    equipo_con_6_pokemons,
+    equipo_pokemons,
+    equipo_pokemons_false,
+    equipo_pokemons_id_mal,
     equipo_mismo_id,
     equipo_siete_pokemons,
     equipo,
     naturaleza_1,
     naturaleza_2,
     naturaleza_3,
+    infernape_mock,
+    infernape_json,
 )
 from fastapi.testclient import TestClient
 from app.models.equipos import EquipoPublic, Equipo, Integrante_pokemon, Integrante_pokemonPublic
 from app.models.movimiento import Movimiento
+from app.models.pokemon import Pokemon
 from main import app
 from app.models.naturaleza import Naturaleza
 from sqlmodel import Session, select
@@ -45,24 +50,37 @@ def test_get_natures(session: Session, client: TestClient) -> None:
 
 
 def test_crear_equipo(session: Session, client: TestClient)->None:
-    response = client.post("/teams/", json=equipo_con_6_pokemons)
+    response = client.post("/teams/", json=equipo_pokemons)
     assert response.status_code == 201
     content = response.json()
+
     assert content["nombre"] == "Equipo Elite"
     assert content["id_equipo"] == 12
 
 def test_crear_equipo_mismo_id(session: Session, client: TestClient)->None:
-    equipo= Equipo(nombre="nombre", id_equipo=1)
+    equipo= Equipo(nombre="nombre", id_equipo=1, pokemons_de_equipo=[])
     session.add(equipo)
     session.commit()
     equipo_id={
         "nombre":"copia",
         "id_equipo": 1,
+        "pokemons_de_equipo": [
+        ]
     }
     response = client.post("/teams", json=equipo_id)
     assert response.status_code == 400
 
+def test_crear_integrante_pokemon_inexistente(session: Session, client: TestClient)->None:
+    response = client.post("/teams/", json=equipo_pokemons_false)
+    assert response.status_code == 404
+    assert response.json()["detail"] == "El pokemon no existe"
 
+def test_crear_equipo_diferencia_id(session: Session, client: TestClient)->None:
+    response = client.post("/teams", json=equipo_pokemons_id_mal)
+    assert response.status_code == 400
+    assert response.json()["detail"] == "un integrante no comparte id con el equipo"
+
+    
 # def test_borrar_equipo_existente():
 
 #     teams.append(equipo)

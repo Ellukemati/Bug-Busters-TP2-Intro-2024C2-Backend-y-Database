@@ -2,8 +2,9 @@
 from fastapi import APIRouter, HTTPException, status, Depends
 from models import Error
 from app.models.movimiento import Movimiento
-from app.models.equipos import Equipo, Integrante_pokemon, EquipoPublic, EquipoBase
+from app.models.equipos import Equipo, Integrante_pokemon, EquipoPublic, EquipoBase, EquipoCreate
 from app.models.naturaleza import Naturaleza
+from app.models.pokemon import Pokemon
 from sqlmodel import select, Session, insert
 from app.db.database import SessionDep
 import csv
@@ -25,18 +26,42 @@ def show_natures(Session: SessionDep) -> list[Naturaleza]:
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
-def post_team(session: SessionDep, team: Equipo) -> EquipoPublic:
-    equipo = session.exec(select(Equipo).where(Equipo.id_equipo == team.id_equipo)).first()
-    if equipo is None:
-        session.add(team)
+def post_team(session: SessionDep, team: EquipoCreate) -> EquipoPublic:
+    teams = session.exec(select(Equipo).where(Equipo.id_equipo == team.id_equipo)).first()
+    if not teams:
+        equipo = Equipo(nombre = team.nombre, id_equipo = team.id_equipo)
+        for integrante in team.pokemons_de_equipo:
+            if(integrante.equipo_id != equipo.id_equipo):
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="un integrante no comparte id con el equipo")
+            pokemon = session.exec(select(Pokemon).where(Pokemon.id == integrante.pokemon_id)).first()
+            if not pokemon:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="El pokemon no existe")
+            naturaleza = session.exec(select(Naturaleza).where(Naturaleza.id == integrante.naturaleza_id)).first()
+            if not naturaleza:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="La naturaleza no existe")
+            miembro = Integrante_pokemon(id=integrante.id, equipo_id = integrante.equipo_id, naturaleza_id = integrante.naturaleza_id, pokemon_id = integrante.pokemon_id, naturaleza = naturaleza.nombre)
+            for movimiento in integrante.movimientos_ids:
+                moves = session.exec(select(Movimiento).where(Movimiento.id == movimiento)).first()
+                if not moves:
+                    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="El movimiento no existe")
+                aprende = False
+                for mov in pokemon.posibles_movimientos:
+                    if mov.id == movimiento:
+                        aprende = True
+                if not aprende:
+                    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="El pokemon no aprende el movimiento")
+                miembro.movimientos.append(moves)
+            equipo.pokemons_de_equipo.append(miembro)
+        if(len(equipo.pokemons_de_equipo) > 6):
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Tiene demasiados integrantes")
+        session.add(equipo)
         session.commit()
-        session.refresh(team)
-        return team
-    raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Ya existe un equipo con ese id",
-            )
-
+        session.refresh(equipo)
+        return equipo
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="ID de equipo ya ocupado"
+        )
 
 
 @router.get("/")

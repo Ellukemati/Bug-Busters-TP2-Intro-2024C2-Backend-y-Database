@@ -5,7 +5,6 @@ from test.jsons import infernape_mock, movimientos_infernape
 import pytest
 from sqlmodel import Session
 from app.db.database import SessionDep
-from app.models.pokemon import Pokemon
 from app.models.movimiento import Movimiento
 from app.models.pokemonMovimiento import PokemonMovimiento
 

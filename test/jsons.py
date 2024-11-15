@@ -22,9 +22,41 @@ naturaleza_3 = Naturaleza(
     reduce_estadistica="attack",
 )
 # ----------------- JSONS EQUIPOS --------------------------------
-equipo_con_6_pokemons = {
-    "id_equipo": 12,
+equipo_pokemons = {
     "nombre": "Equipo Elite",
+    "id_equipo": 12,
+    "pokemons_de_equipo": [
+    ]    
+}
+equipo_pokemons_false = {
+    "nombre": "Equipo Elite",
+    "id_equipo": 12,
+    "pokemons_de_equipo": [
+        {
+            "id": 25,
+            "equipo_id": 12,
+            "pokemon_id": 5,
+            "naturaleza_id": 3,
+            "movimientos_ids": [
+                5,
+            ],
+        },
+    ]    
+}
+equipo_pokemons_id_mal = {
+    "nombre": "Equipo Elite",
+    "id_equipo": 12,
+    "pokemons_de_equipo": [
+        {
+            "id": 25,
+            "equipo_id": 13,
+            "pokemon_id": 5,
+            "naturaleza_id": 3,
+            "movimientos_ids": [
+                5,
+            ],
+        },
+    ]    
 }
 equipo_siete_pokemons = {
     "id_equipo": 2,
