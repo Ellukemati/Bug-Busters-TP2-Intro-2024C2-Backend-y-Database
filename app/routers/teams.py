@@ -1,7 +1,10 @@
 # incluyan clases de lo que haga falta
 from fastapi import APIRouter, HTTPException, status
-from models import Movimiento, Pokemon, Integrante_pokemon, Naturaleza, Error
-from app.models.equipos import Equipo
+from app.models.movimiento import Movimiento
+from app.models.pokemon import Pokemon
+from app.models.error import Error
+from app.models.equipos import Equipo, EquipoPublic, Integrante_pokemon
+from app.models.naturaleza import Naturaleza
 from sqlmodel import select, Session
 from app.db.database import SessionDep
 import csv
@@ -11,32 +14,15 @@ router = APIRouter()
 
 teams: list[Equipo] = []
 # apartir de este punto implementar los endpoints
-Naturalezas: list[Naturaleza] = []
 estadisticas = {}
 
-with open("stats.csv", mode="r") as estadisticas_file:
-    reader = csv.DictReader(estadisticas_file)
-    for row in reader:
-        estadisticas[row["id"]] = row["identifier"]
-with open("natures.csv", mode="r") as naturalezas_file:
-    reader = csv.DictReader(naturalezas_file)
-    for row in reader:
-        id_aumenta = row["increased_stat_id"]
-        id_disminuye = row["decreased_stat_id"]
-        nombre_aumenta = estadisticas.get(id_aumenta)
-        nombre_disminuye = estadisticas.get(id_disminuye)
-        naturaleza = Naturaleza(
-            id=int(row["id"]),
-            nombre=row["identifier"],
-            aumenta_estadistica=nombre_aumenta,
-            reduce_estadistica=nombre_disminuye,
-        )
-        Naturalezas.append(naturaleza)
 
 
 @router.get("/natures")
-def show_natures() -> list[Naturaleza]:
-    return Naturalezas
+def show_natures(Session: SessionDep) -> list[Naturaleza]:
+    query = select(Naturaleza)
+    naturalezas = Session.exec(query)
+    return naturalezas
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
@@ -83,9 +69,12 @@ def show_id_team(id: int) -> Equipo:
 
 
 @router.delete("/{id}", responses={status.HTTP_404_NOT_FOUND: {"model": Error}})
-def borrar_equipo(session: SessionDep, id: int) -> Equipo:
+def borrar_equipo(session: SessionDep, id: int) -> EquipoPublic:
     equipo = session.exec(select(Equipo).where(Equipo.id_equipo == id)).first()
     if equipo is not None:
+        for miembro in equipo.pokemons_de_equipo:
+            integrante = session.exec(select(Integrante_pokemon).where(Integrante_pokemon.id == miembro.id)).first()
+            session.delete(integrante)
         session.delete(equipo)
         session.commit()
         return equipo

@@ -26,7 +26,6 @@ def cargar_pokemon(session: Session):
             pokemon_id = int(fila["id"])
             pokemon = Pokemon(
                 id=pokemon_id,
-                id_repetido=pokemon_id,
                 nombre=fila["identifier"],
                 url_imagen=f"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{fila['id']}.png",
                 altura=int(fila["height"]),
