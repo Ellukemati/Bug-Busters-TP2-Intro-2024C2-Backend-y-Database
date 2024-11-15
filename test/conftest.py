@@ -9,39 +9,6 @@ from sqlmodel.pool import StaticPool
 
 from app.db.database import get_db
 
-
-
-from sqlmodel import Session, SQLModel, create_engine
-from sqlmodel.pool import StaticPool
-
-
-from app.db.database import get_db
-
-
-
-from sqlmodel import Session, SQLModel, create_engine
-from sqlmodel.pool import StaticPool
-
-
-from app.db.database import get_db
-
-
-
-from sqlmodel import Session, SQLModel, create_engine
-from sqlmodel.pool import StaticPool
-
-
-from app.db.database import get_db
-
-
-
-from sqlmodel import Session, SQLModel, create_engine
-from sqlmodel.pool import StaticPool
-
-
-from app.db.database import get_db
-
-
 @pytest.fixture(scope="module")
 def client() -> Generator[TestClient, None, None]:
     with TestClient(app) as c:

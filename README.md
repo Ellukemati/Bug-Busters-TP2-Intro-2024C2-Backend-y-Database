@@ -8,32 +8,41 @@ Version de Python 3.10.12 en adelante
 ```
 pip install pylint
 ```
-Archivos CSV:
-moves.csv,
-move_damage_class,
-move_effect.csv,
-type_names.csv,
-pokemon.csv,
-pokemon_stats.csv,
-pokemon_types.csv,
-type_names.csv,
-pokemon_abilities.csv,
-ability_names.csv,
-pokemon_evolutions.csv,
-### Instalación
+### Archivos CSV:
+- moves.csv
+- move_damage_class
+- move_effect_prose.csv
+- type_names.csv
+- pokemon.csv
+- pokemon_stats.csv
+- pokemon_types.csv
+- type_names.csv
+- pokemon_abilities.csv
+- ability_names.csv
+- pokemon_evolutions.csv
+- moves_name.csv
+
+### Crear archivo de DataBase:
+ Se debe llamar _'database.db'_ , y debe estar en la carpeta app/db
+
+## Instalación
 
 
-_Crear Ambiente Virtual:_
+### Crear Ambiente Virtual:
 
 ```
 python3 -m venv venv
 ```
-_Activar ambiente virtual:_
+### Activar ambiente virtual:
 ```
 source venv/bin/activate
 ```
-_Dependencias:_
-(Necesito tener el ambiente virtual activado)
+## Dependencias:
+### Sin el ambiente virtual activado:
+```
+pip install sqlite3 
+```
+### Con el ambiente virtual activado:
 ```
 pip install pytest
 ```
@@ -43,7 +52,17 @@ pip install fastapi[standard]
 ```
 pip install coverage
 ```
+```
+pip install slqmodel
+```
+```
+pip install alembic
+```
 
+### Correr las migraciones (poner al dia la DB):
+```
+alembic upgrade head
+```
 ## Ejecutar las pruebas
 (Necesito tener el ambiente virtual activado)
 

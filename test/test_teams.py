@@ -97,6 +97,7 @@ def test_buscar_team_por_id(session: Session, client: TestClient) -> None:
     equipo = Equipo(
         id_equipo=1,
         nombre="nombre",
+        pokemons_de_equipo=[]
     )
     session.add(equipo)
     session.commit()
