@@ -25,6 +25,7 @@ def upgrade() -> None:
         sa.Column("id", sa.Integer(), primary_key=True, nullable=False),
         sa.Column("pokemon_id", sa.Integer(), nullable=False),
         sa.Column("naturaleza_id", sa.Integer(), nullable=False),
+        sa.Column("naturaleza", sa.TEXT(), nullable=False),
         sa.ForeignKeyConstraint(
             ["pokemon_id"],
             ["pokemon.id"],
