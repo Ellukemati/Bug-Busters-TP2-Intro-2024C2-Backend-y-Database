@@ -25,6 +25,7 @@ def upgrade() -> None:
         "integrante_movimiento_link",
         sa.Column("integrante_id", sa.Integer(), nullable=False),
         sa.Column("movimiento_id", sa.Integer(), nullable=False),
+        sa.Column("naturaleza", sa.TEXT(), nullable=False),
         sa.ForeignKeyConstraint(
             ["integrante_id"],
             ["integrante_pokemon.id"],

@@ -110,10 +110,12 @@ def test_actualizar_equipo_existente(session: Session, client: TestClient)->None
     equipo = Equipo(
         id_equipo=1,
         nombre="nombre",
+        pokemons_de_equipo =[]
     )
     equipo_actualizado = {
         "id_equipo": 2,
         "nombre": "editado",
+        "pokemons_de_equipo": []
     }
     session.add(equipo)
     session.commit()
@@ -128,6 +130,7 @@ def test_actualizar_equipo_no_existente(session: Session, client: TestClient)-> 
     equipo_actualizado = {
         "id_equipo": 2,
         "nombre": "editado",
+        "pokemons_de_equipo": []
     }
     response = client.put("/teams/100", json=equipo_actualizado)
     assert response.status_code == 404
