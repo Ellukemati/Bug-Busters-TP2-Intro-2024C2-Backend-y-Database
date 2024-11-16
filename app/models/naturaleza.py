@@ -6,7 +6,7 @@ class NaturalezaBase(SQLModel):
     reduce_estadistica: str
 
 class Naturaleza(NaturalezaBase, table=True):
-    id: int = Field(primary_key=True) 
+    id: int = Field(primary_key=True, foreign_key="integrante_pokemon.naturaleza_id") 
 
 class NaturalezaPublic(NaturalezaBase):
     id: int

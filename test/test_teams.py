@@ -8,8 +8,8 @@ from test.jsons import (
     naturaleza_3,
 )
 from fastapi.testclient import TestClient
-from app.routers.teams import teams
-from models import Equipo
+from app.models.equipos import EquipoPublic, Equipo, Integrante_pokemon, Integrante_pokemonPublic
+from app.models.movimiento import Movimiento
 from main import app
 from app.models.naturaleza import Naturaleza
 from sqlmodel import Session, select
@@ -17,8 +17,8 @@ from app.db.database import SessionDep
 
 client = TestClient(app)
 
-
 def test_get_natures(session: Session, client: TestClient) -> None:
+
 
     session.add(naturaleza_1)
     session.add(naturaleza_2)
@@ -85,12 +85,21 @@ def test_get_natures(session: Session, client: TestClient) -> None:
 #     assert response.json()["detail"] == "No se encontro un equipo con ese id"
 
 
-# def test_get_teams():
-#     lista_vacia: list[Equipo] = []
-#     respuesta = client.get("/teams/")
-#     contenido = respuesta.json()
-#     assert respuesta.status_code == 200
-#     assert contenido == lista_vacia
+
+def test_get_teams_vacio(session: Session, client: TestClient) -> None:
+    respuesta = client.get("/teams/")
+    contenido = respuesta.json()
+    assert respuesta.status_code == 200
+    assert len(contenido) == 0
+
+def test_get_teams(session: Session, client: TestClient)-> None:
+    equipo = Equipo(id_equipo = 1, nombre="nombre", pokemons_de_equipo=[])
+    session.add(equipo)
+    session.commit()
+    respuesta = client.get("/teams/")
+    contenido = respuesta.json()
+    assert respuesta.status_code == 200
+    assert len(contenido) == 1
 
 
 # def test_buscar_team_por_id():

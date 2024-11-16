@@ -1,3 +1,4 @@
+from app.models.movimiento import Movimiento
 from app.models.pokemon import Pokemon, PokemonBase
 from app.models.naturaleza import Naturaleza
 

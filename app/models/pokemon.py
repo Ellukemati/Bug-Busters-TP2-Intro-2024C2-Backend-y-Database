@@ -1,8 +1,6 @@
 from sqlmodel import SQLModel, Field, Relationship
-
 from app.models.pokemonMovimiento import PokemonMovimiento
 from app.models.movimiento import Movimiento
-
 
 class PokemonBase(SQLModel):
     nombre: str
@@ -26,6 +24,5 @@ class PokemonBase(SQLModel):
 
 class Pokemon(PokemonBase, table=True):
     id: int = Field(primary_key=True)
-    posibles_movimientos: list[Movimiento] = Relationship(
-        back_populates="pokemon_que_lo_aprenden", link_model=PokemonMovimiento
-    )
+    posibles_movimientos: list["Movimiento"] = Relationship(back_populates="pokemon_que_lo_aprenden", link_model=PokemonMovimiento)
+
