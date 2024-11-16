@@ -1,7 +1,7 @@
 """Creación de tablas Pokemon y PokemonMovimiento
 
 Revision ID: 25d8e8b1052c
-Revises: 1f5e7255ea81
+Revises: badc6a43c32f
 Create Date: 2024-11-04 19:35:11.774815
 
 """
@@ -11,14 +11,14 @@ from alembic import op
 import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
-revision: str = "1"
-down_revision: Union[str, None] = None
+revision: str = "25d8e8b1052c"
+down_revision: Union[str, None] = "badc6a43c32f"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
 def upgrade() -> None:
     op.create_table(
-        "Pokemon",
+        "pokemon",
         sa.Column("id", sa.Integer, primary_key=True),
         sa.Column("nombre", sa.Text, nullable=False),
         sa.Column("url_imagen", sa.Text, nullable=False),
@@ -40,7 +40,7 @@ def upgrade() -> None:
     )
 
     op.create_table(
-        "PokemonMovimiento",
+        "pokemonmovimiento",
         sa.Column("pokemon_id", sa.Integer, primary_key=True),
         sa.Column("movimiento_id", sa.Integer, primary_key=True),
         sa.ForeignKeyConstraint(
@@ -54,5 +54,5 @@ def upgrade() -> None:
     )
 
 def downgrade() -> None:
-    op.drop_table("PokemonMovimiento")
-    op.drop_table("Pokemon")
+    op.drop_table("pokemonmovimiento")
+    op.drop_table("pokemon")

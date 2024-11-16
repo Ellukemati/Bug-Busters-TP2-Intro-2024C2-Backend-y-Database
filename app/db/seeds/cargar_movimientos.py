@@ -46,7 +46,7 @@ def cargar_movimientos(session: Session):
                     INGLES,
                     MOVE_EFFECT_CSV,
                 ),
-                probabilidad_efecto=int(
+                probabilidad_efecto=(
                     row["effect_chance"] if row["effect_chance"].strip() else None
                 ),
             )

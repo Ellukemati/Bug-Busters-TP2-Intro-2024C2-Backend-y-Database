@@ -1,7 +1,9 @@
 # incluyan clases de lo que haga falta
 from fastapi import APIRouter, HTTPException, status
-from models import Movimiento, Pokemon, Integrante_pokemon, Equipo
+from app.models.movimiento import Movimiento
+from app.models.pokemon import Pokemon
 from app.models.naturaleza import Naturaleza
+from app.models.equipos import EquipoPublic, Equipo, Integrante_pokemon
 from sqlmodel import Session, select
 from app.db.database import SessionDep
 import csv
@@ -46,8 +48,10 @@ def post_team(team: Equipo) -> list[Equipo]:
 
 
 @router.get("/")
-def get_teams() -> list[Equipo]:
-    return teams
+def get_teams(session: SessionDep) -> list[EquipoPublic]:
+    query = select(Equipo)
+    equipos = session.exec(query)
+    return equipos
 
 
 @router.get("/{id}")
