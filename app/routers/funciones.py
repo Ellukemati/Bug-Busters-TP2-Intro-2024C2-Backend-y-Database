@@ -1,4 +1,5 @@
-from models import Movimiento, Pokemon
+from app.models.movimiento import Movimiento
+from app.models.pokemon import Pokemon
 import csv
 from fastapi import HTTPException, status
 

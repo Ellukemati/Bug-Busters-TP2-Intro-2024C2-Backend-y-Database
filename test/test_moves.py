@@ -10,7 +10,6 @@ from test.jsons import movimiento_id_176,pokemons_que_aprenden_176,relaciones, m
 
 client = TestClient(app)
 
-
 def test_get_moves_id_pokemon_176(session: Session, client: TestClient):
     movimiento = Movimiento(**movimiento_id_176)
     pokemones = [Pokemon(**data) for data in pokemons_que_aprenden_176]

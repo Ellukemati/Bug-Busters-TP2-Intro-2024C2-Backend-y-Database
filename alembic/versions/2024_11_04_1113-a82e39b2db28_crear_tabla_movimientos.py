@@ -36,4 +36,12 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
+<<<<<<< HEAD
     op.drop_table("movimiento")
+=======
+<<<<<<< HEAD
+    op.drop_table("movimiento")
+=======
+    op.drop_table("movimiento")
+>>>>>>> remotes/origin/parte_2
+>>>>>>> remotes/origin/parte_2

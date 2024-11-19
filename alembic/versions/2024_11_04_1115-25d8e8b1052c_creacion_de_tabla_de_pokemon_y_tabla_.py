@@ -55,4 +55,12 @@ def upgrade() -> None:
 
 def downgrade() -> None:
     op.drop_table("pokemonmovimiento")
+<<<<<<< HEAD:alembic/versions/2024_11_04_1935-25d8e8b1052c_creacion_de_tablas_pokemon_y_pokemonmovimiento.py
     op.drop_table("pokemon")
+=======
+<<<<<<< HEAD:alembic/versions/2024_11_04_1935-25d8e8b1052c_creacion_de_tablas_pokemon_y_pokemonmovimiento.py
+    op.drop_table("pokemon")
+=======
+    op.drop_table("pokemon")
+>>>>>>> remotes/origin/parte_2:alembic/versions/2024_11_04_1115-25d8e8b1052c_creacion_de_tabla_de_pokemon_y_tabla_.py
+>>>>>>> remotes/origin/parte_2:alembic/versions/2024_11_04_1115-25d8e8b1052c_creacion_de_tabla_de_pokemon_y_tabla_.py
