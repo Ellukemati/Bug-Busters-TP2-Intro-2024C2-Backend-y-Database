@@ -14,10 +14,7 @@ from test.jsons import (
 from fastapi.testclient import TestClient
 from app.models.equipos import EquipoPublic, Equipo, Integrante_pokemon, Integrante_pokemonPublic
 from app.models.movimiento import Movimiento
-<<<<<<< HEAD
-=======
 from app.models.pokemon import Pokemon
->>>>>>> remotes/origin/parte_2
 from main import app
 from app.models.naturaleza import Naturaleza
 from sqlmodel import Session, select
