@@ -1,3 +1,4 @@
+from app.models.movimiento import Movimiento
 from app.models.pokemon import Pokemon, PokemonBase
 from app.models.naturaleza import Naturaleza
 
@@ -22,167 +23,41 @@ naturaleza_3 = Naturaleza(
     reduce_estadistica="attack",
 )
 # ----------------- JSONS EQUIPOS --------------------------------
-equipo_con_6_pokemons = {
-    "id_equipo": 1,
+equipo_pokemons = {
     "nombre": "Equipo Elite",
+    "id_equipo": 12,
+    "pokemons_de_equipo": [
+    ]    
+}
+equipo_pokemons_false = {
+    "nombre": "Equipo Elite",
+    "id_equipo": 12,
     "pokemons_de_equipo": [
         {
             "id": 25,
-            "nombre": "Pikachu",
-            "naturaleza": {
-                "id": 1,
-                "nombre": "Activa",
-                "aumenta_estadistica": "Velocidad",
-                "reduce_estadistica": "Defensa",
-            },
-            "movimientos": [
-                {
-                    "id": 1,
-                    "nombre": "Impactrueno",
-                    "tipo": "Eléctrico",
-                    "power": 40,
-                    "accuracy": 100,
-                    "pp": 30,
-                    "generacion": "I",
-                    "categoria": "Especial",
-                    "efecto": "Parálisis",
-                    "probabilidad_efecto": 10,
-                },
-                {
-                    "id": 2,
-                    "nombre": "Rayo",
-                    "tipo": "Eléctrico",
-                    "power": 90,
-                    "accuracy": 100,
-                    "pp": 15,
-                    "generacion": "I",
-                    "categoria": "Especial",
-                    "efecto": "Parálisis",
-                    "probabilidad_efecto": 10,
-                },
+            "equipo_id": 12,
+            "pokemon_id": 5,
+            "naturaleza_id": 3,
+            "movimientos_ids": [
+                5,
             ],
         },
+    ]    
+}
+equipo_pokemons_id_mal = {
+    "nombre": "Equipo Elite",
+    "id_equipo": 12,
+    "pokemons_de_equipo": [
         {
-            "id": 6,
-            "nombre": "Charizard",
-            "naturaleza": {
-                "id": 2,
-                "nombre": "Audaz",
-                "aumenta_estadistica": "Ataque",
-                "reduce_estadistica": "Defensa",
-            },
-            "movimientos": [
-                {
-                    "id": 3,
-                    "nombre": "Llamarada",
-                    "tipo": "Fuego",
-                    "power": 110,
-                    "accuracy": 85,
-                    "pp": 5,
-                    "generacion": "I",
-                    "categoria": "Especial",
-                    "efecto": "Quemadura",
-                    "probabilidad_efecto": 30,
-                }
+            "id": 25,
+            "equipo_id": 13,
+            "pokemon_id": 5,
+            "naturaleza_id": 3,
+            "movimientos_ids": [
+                5,
             ],
         },
-        {
-            "id": 9,
-            "nombre": "Blastoise",
-            "naturaleza": {
-                "id": 3,
-                "nombre": "Modesta",
-                "aumenta_estadistica": "Ataque Especial",
-                "reduce_estadistica": "Ataque",
-            },
-            "movimientos": [
-                {
-                    "id": 4,
-                    "nombre": "Hidrobomba",
-                    "tipo": "Agua",
-                    "power": 110,
-                    "accuracy": 80,
-                    "pp": 5,
-                    "generacion": "I",
-                    "categoria": "Especial",
-                    "efecto": "Ninguno",
-                    "probabilidad_efecto": None,
-                }
-            ],
-        },
-        {
-            "id": 3,
-            "nombre": "Venusaur",
-            "naturaleza": {
-                "id": 4,
-                "nombre": "Serena",
-                "aumenta_estadistica": "Defensa Especial",
-                "reduce_estadistica": "Ataque",
-            },
-            "movimientos": [
-                {
-                    "id": 5,
-                    "nombre": "Solar Rayo",
-                    "tipo": "Planta",
-                    "power": 120,
-                    "accuracy": 100,
-                    "pp": 10,
-                    "generacion": "I",
-                    "categoria": "Especial",
-                    "efecto": "Ninguno",
-                    "probabilidad_efecto": None,
-                }
-            ],
-        },
-        {
-            "id": 94,
-            "nombre": "Gengar",
-            "naturaleza": {
-                "id": 5,
-                "nombre": "Miedosa",
-                "aumenta_estadistica": "Velocidad",
-                "reduce_estadistica": "Defensa",
-            },
-            "movimientos": [
-                {
-                    "id": 6,
-                    "nombre": "Bola Sombra",
-                    "tipo": "Fantasma",
-                    "power": 80,
-                    "accuracy": 100,
-                    "pp": 15,
-                    "generacion": "II",
-                    "categoria": "Especial",
-                    "efecto": "Ninguno",
-                    "probabilidad_efecto": None,
-                }
-            ],
-        },
-        {
-            "id": 149,
-            "nombre": "Dragonite",
-            "naturaleza": {
-                "id": 6,
-                "nombre": "Firme",
-                "aumenta_estadistica": "Ataque",
-                "reduce_estadistica": "Defensa Especial",
-            },
-            "movimientos": [
-                {
-                    "id": 7,
-                    "nombre": "Puño Fuego",
-                    "tipo": "Fuego",
-                    "power": 100,
-                    "accuracy": 100,
-                    "pp": 15,
-                    "generacion": "II",
-                    "categoria": "Físico",
-                    "efecto": "Ninguno",
-                    "probabilidad_efecto": None,
-                }
-            ],
-        },
-    ],
+    ]    
 }
 equipo_siete_pokemons = {
     "id_equipo": 2,
@@ -825,6 +700,46 @@ infernape_mock = Pokemon(
     estadistica_speed=108,
     habilidad_2="Puño Férreo",
     id_evolucion_anterior=391,
+)
+greninja_mock = Pokemon(
+    id=658,
+    nombre="greninja",
+    url_imagen="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/658.png",
+    altura=15,
+    peso=400,
+    tipo_1="Agua",
+    tipo_2="Siniestro",
+    habilidad_1="Torrente",
+    habilidad_2="Mutatipo",
+    habilidad_3=None,
+    estadistica_hp=72,
+    estadistica_attack=95,
+    estadistica_defense=67,
+    estadistica_special_attack=103,
+    estadistica_special_defense=71,
+    estadistica_speed=122,
+    evolucion_anterior=657,
+    evolucion_siguiente=None,
+)
+greninja_mockid1 = Pokemon(
+    id=1,
+    nombre="greninja",
+    url_imagen="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/658.png",
+    altura=15,
+    peso=400,
+    tipo_1="Agua",
+    tipo_2="Siniestro",
+    habilidad_1="Torrente",
+    habilidad_2="Mutatipo",
+    habilidad_3=None,
+    estadistica_hp=72,
+    estadistica_attack=95,
+    estadistica_defense=67,
+    estadistica_special_attack=103,
+    estadistica_special_defense=71,
+    estadistica_speed=122,
+    evolucion_anterior=657,
+    evolucion_siguiente=None,
 )
 infernape_mock_id1 = Pokemon(
     nombre="infernape",
