@@ -1,3 +1,4 @@
+from app.models.movimiento import Movimiento
 from app.models.pokemon import Pokemon, PokemonBase
 from app.models.naturaleza import Naturaleza
 
@@ -699,6 +700,46 @@ infernape_mock = Pokemon(
     estadistica_speed=108,
     habilidad_2="Puño Férreo",
     id_evolucion_anterior=391,
+)
+greninja_mock = Pokemon(
+    id=658,
+    nombre="greninja",
+    url_imagen="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/658.png",
+    altura=15,
+    peso=400,
+    tipo_1="Agua",
+    tipo_2="Siniestro",
+    habilidad_1="Torrente",
+    habilidad_2="Mutatipo",
+    habilidad_3=None,
+    estadistica_hp=72,
+    estadistica_attack=95,
+    estadistica_defense=67,
+    estadistica_special_attack=103,
+    estadistica_special_defense=71,
+    estadistica_speed=122,
+    evolucion_anterior=657,
+    evolucion_siguiente=None,
+)
+greninja_mockid1 = Pokemon(
+    id=1,
+    nombre="greninja",
+    url_imagen="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/658.png",
+    altura=15,
+    peso=400,
+    tipo_1="Agua",
+    tipo_2="Siniestro",
+    habilidad_1="Torrente",
+    habilidad_2="Mutatipo",
+    habilidad_3=None,
+    estadistica_hp=72,
+    estadistica_attack=95,
+    estadistica_defense=67,
+    estadistica_special_attack=103,
+    estadistica_special_defense=71,
+    estadistica_speed=122,
+    evolucion_anterior=657,
+    evolucion_siguiente=None,
 )
 infernape_mock_id1 = Pokemon(
     nombre="infernape",

@@ -65,8 +65,10 @@ def post_team(session: SessionDep, team: EquipoCreate) -> EquipoPublic:
 
 
 @router.get("/")
-def get_teams() -> list[Equipo]:
-    return teams
+def get_teams(session: SessionDep) -> list[EquipoPublic]:
+    query = select(Equipo)
+    equipos = session.exec(query)
+    return equipos
 
 
 @router.get("/{id}")

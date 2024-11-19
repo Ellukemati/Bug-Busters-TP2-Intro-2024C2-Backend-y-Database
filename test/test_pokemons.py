@@ -1,9 +1,14 @@
 from fastapi.testclient import TestClient
-from app.models.pokemon import Pokemon
 from main import app
-from test.jsons import infernape_mock, movimientos_infernape
+from test.jsons import (
+    infernape_mock,
+    movimientos_infernape,
+    greninja_mock,
+    greninja_mockid1,
+)
 import pytest
 from sqlmodel import Session
+from app.models.pokemon import Pokemon
 from app.db.database import SessionDep
 from app.models.movimiento import Movimiento
 from app.models.pokemonMovimiento import PokemonMovimiento
@@ -20,11 +25,36 @@ from test.jsons import (
 client = TestClient(app)
 
 
-def test_get_pokemon_encontrado(session: Session, client: TestClient):
-    session.add(infernape_mock)
-    response = client.get("/pokemons/392")
+def test_get_pokemon_encontrados(session: Session, client: TestClient):
+    # Hago un mock más para probarlo con 2
+
+    session.add_all([infernape_mock, greninja_mock])
+    session.commit()
+
+    response = client.get("/pokemons")
     assert response.status_code == 200
-    assert response.json() == infernape_mock.model_dump()
+
+    # Chequeo que los datos devueltos sean de todos los Pokémon cargados
+    content = response.json()
+    assert len(content) == 2
+    assert content[0]["nombre"] == "infernape"
+    assert content[1]["nombre"] == "greninja"
+
+
+def test_get_pokemon_no_encontrados(session: Session, client: TestClient):
+    response = client.get("/pokemons")  # No hay Pokémon en el mock de la db.
+
+    assert response.status_code == 404
+    assert response.json() == {
+        "detail": "No se encontraron Pokémon en la base de datos."
+    }
+
+
+def test_get_pokemon_encontrado(session: Session, client: TestClient):
+    session.add(greninja_mockid1)
+    response = client.get("/pokemons/1")
+    assert response.status_code == 200
+    assert response.json() == greninja_mockid1.model_dump()
 
 
 def test_get_pokemon_no_encontrado(session: Session, client: TestClient):
@@ -70,5 +100,6 @@ def test_borrar_pokemon_no_existe(session: Session, client: TestClient):
 
 
 def test_crear_pokemon(session: Session, client: TestClient):
+
     response = client.post("/pokemons/", json=infernape_mock_post.model_dump())
     assert response.status_code == 201
