@@ -1,7 +1,6 @@
 from sqlmodel import SQLModel, Field, Relationship
 from app.models.pokemonMovimiento import PokemonMovimiento
 from app.models.movimiento import Movimiento
-
 class PokemonBase(SQLModel):
     nombre: str
     url_imagen: str

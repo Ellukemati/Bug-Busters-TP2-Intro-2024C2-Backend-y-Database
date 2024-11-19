@@ -9,6 +9,7 @@ from test.jsons import (
 import pytest
 from sqlmodel import Session
 from app.models.pokemon import Pokemon
+from app.db.database import SessionDep
 from app.models.movimiento import Movimiento
 from app.models.pokemonMovimiento import PokemonMovimiento
 
