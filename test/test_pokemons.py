@@ -1,11 +1,5 @@
 from fastapi.testclient import TestClient
 from main import app
-from test.jsons import (
-    infernape_mock,
-    movimientos_infernape,
-    greninja_mock,
-    greninja_mockid1,
-)
 import pytest
 from sqlmodel import Session
 from app.models.pokemon import Pokemon
@@ -14,6 +8,8 @@ from app.models.movimiento import Movimiento
 from app.models.pokemonMovimiento import PokemonMovimiento
 
 from test.jsons import (
+    greninja_mock,
+    greninja_mockid1,
     infernape_mock,
     movimientos_infernape,
     relaciones_infernape,

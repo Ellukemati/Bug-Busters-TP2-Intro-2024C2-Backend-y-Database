@@ -5,7 +5,6 @@ from app.models.equipos import EquipoPublic, Equipo, Integrante_pokemon, EquipoC
 from app.models.movimiento import Movimiento
 from app.models.pokemon import Pokemon
 from app.models.naturaleza import Naturaleza
-from app.models.pokemon import Pokemon
 from sqlmodel import select, Session, insert
 from app.db.database import SessionDep
 import csv
@@ -72,19 +71,12 @@ def get_teams(session: SessionDep) -> list[EquipoPublic]:
     return equipos
 
 
-@router.get("/{id}")
-def show_id_team(id: int) -> Equipo:
-    for indice, equipo_existente in enumerate(teams):
-        id_equipo_existente = (
-            equipo_existente.get("id_equipo")
-            if isinstance(equipo_existente, dict)
-            else equipo_existente.id_equipo
-        )
-        if id_equipo_existente == id:
-            return teams[indice]
-    raise HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND, detail="No se encontro el equipo"
-    )
+@router.get("/{id}", responses={status.HTTP_404_NOT_FOUND: {"model": Error}})
+def show_id_team(session: SessionDep, id: int) -> EquipoPublic:
+    equipo = session.exec(select(Equipo).where(Equipo.id_equipo == id)). first()
+    if equipo:
+        return equipo
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Equipo no encontrado")
 
 
 @router.delete("/{id}")

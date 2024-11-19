@@ -115,16 +115,24 @@ def test_get_teams(session: Session, client: TestClient)-> None:
     assert len(contenido) == 1
 
 
-# def test_buscar_team_por_id():
-#     teams.append(equipo_con_6_pokemons)
-#     response = client.get("/teams/1")
-#     assert response.status_code == 200
+def test_buscar_team_por_id(session: Session, client: TestClient) -> None:
+    equipo = Equipo(
+        id_equipo=1,
+        nombre="nombre",
+        pokemons_de_equipo=[]
+    )
+    session.add(equipo)
+    session.commit()
+    response = client.get("/teams/1")
+    assert response.status_code == 200
+    content = response.json()
+    assert content["id_equipo"] == 1
 
 
-# def test_buscar_equipo_no_existente():
-#     response = client.get("/teams/100")
-#     assert response.status_code == 404
-#     assert response.json()["detail"] == "No se encontro el equipo"
+def test_buscar_equipo_no_existente(session: Session, client: TestClient)-> None:
+    response = client.get("/teams/100")
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Equipo no encontrado"
 
 
 def test_actualizar_equipo_existente(session: Session, client: TestClient)->None:
