@@ -55,4 +55,3 @@ def upgrade() -> None:
 
 def downgrade() -> None:
     op.drop_table("pokemonmovimiento")
-    op.drop_table("pokemon")
