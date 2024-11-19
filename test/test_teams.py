@@ -127,17 +127,32 @@ def test_get_teams(session: Session, client: TestClient)-> None:
 #     assert response.json()["detail"] == "No se encontro el equipo"
 
 
-# def test_actualizar_equipo_existente():
-#     teams.append(equipo_con_6_pokemons)
-#     response = client.put("/teams", json=equipo_mismo_id)
-#     content = response.json()
-#     assert response.status_code == 200
-#     assert content["id_equipo"] == equipo_mismo_id["id_equipo"]
-#     assert content["nombre"] == equipo_mismo_id["nombre"]
-#     teams.clear()
+def test_actualizar_equipo_existente(session: Session, client: TestClient)->None:
+    equipo = Equipo(
+        id_equipo=1,
+        nombre="nombre",
+        pokemons_de_equipo =[]
+    )
+    equipo_actualizado = {
+        "id_equipo": 2,
+        "nombre": "editado",
+        "pokemons_de_equipo": []
+    }
+    session.add(equipo)
+    session.commit()
+    response = client.put("/teams/1", json=equipo_actualizado)
+    content = response.json()
+    assert response.status_code == 200
+    assert content["id_equipo"] == equipo_actualizado["id_equipo"]
+    assert content["nombre"] == equipo_actualizado["nombre"]
 
 
-# def test_actualizar_equipo_no_existente():
-#     response = client.put("/teams", json=equipo)
-#     assert response.status_code == 404
-#     assert response.json()["detail"] == "No se encontro un equipo con ese id"
+def test_actualizar_equipo_no_existente(session: Session, client: TestClient)-> None:
+    equipo_actualizado = {
+        "id_equipo": 2,
+        "nombre": "editado",
+        "pokemons_de_equipo": []
+    }
+    response = client.put("/teams/100", json=equipo_actualizado)
+    assert response.status_code == 404
+
