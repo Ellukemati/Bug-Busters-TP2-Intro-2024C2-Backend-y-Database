@@ -1,5 +1,7 @@
 from fastapi.testclient import TestClient
+from app.models.naturaleza import Naturaleza
 from main import app
+from test.jsons import infernape_mock, movimientos_infernape
 import pytest
 from sqlmodel import Session
 from app.models.pokemon import Pokemon

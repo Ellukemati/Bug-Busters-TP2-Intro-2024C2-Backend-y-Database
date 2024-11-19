@@ -80,22 +80,23 @@ def test_crear_equipo_diferencia_id(session: Session, client: TestClient)->None:
     assert response.status_code == 400
     assert response.json()["detail"] == "un integrante no comparte id con el equipo"
 
-    
-# def test_borrar_equipo_existente():
+def test_borrar_equipo_existente(session: Session, client: TestClient)-> None:
+    equipo = Equipo(
+        id_equipo=1,
+        nombre="nombre",
+        pokemons_de_equipo=[],
+    )
+    session.add(equipo)
+    session.commit()
+    response = client.delete("teams/1")
+    content = response.json()
+    assert response.status_code == 200
+    assert content["nombre"] == equipo.nombre
 
-#     teams.append(equipo)
-#     response = client.delete("teams/2")
 
-#     assert response.status_code == 200
-#     assert response.json() == equipo
-#     teams.clear()
-
-
-# def test_borrar_equipo_no_existe():
-
-#     response = client.delete("/teams/99")
-#     assert response.status_code == 404
-#     assert response.json()["detail"] == "No se encontro un equipo con ese id"
+def test_borrar_equipo_no_existe():
+    response = client.delete("/teams/99")
+    assert response.status_code == 404
 
 
 

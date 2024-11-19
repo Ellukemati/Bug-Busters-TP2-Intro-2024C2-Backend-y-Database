@@ -79,20 +79,19 @@ def show_id_team(session: SessionDep, id: int) -> EquipoPublic:
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Equipo no encontrado")
 
 
-@router.delete("/{id}")
-def borrar_equipo(id: int) -> Equipo:
-    for indice, equipo_existente in enumerate(teams):
-        id_equipo_existente = (
-            equipo_existente.get("id_equipo")
-            if isinstance(equipo_existente, dict)
-            else equipo_existente.id_equipo
-        )
-        if id_equipo_existente == id:
-            teams.pop(indice)
-            return equipo_existente
+@router.delete("/{id}", responses={status.HTTP_404_NOT_FOUND: {"model": Error}})
+def borrar_equipo(session: SessionDep, id: int) -> EquipoPublic:
+    equipo = session.exec(select(Equipo).where(Equipo.id_equipo == id)).first()
+    if equipo is not None:
+        for miembro in equipo.pokemons_de_equipo:
+            integrante = session.exec(select(Integrante_pokemon).where(Integrante_pokemon.id == miembro.id)).first()
+            session.delete(integrante)
+        session.delete(equipo)
+        session.commit()
+        return equipo
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
-        detail="No se encontro un equipo con ese id",
+        detail="El equipo no existe",
     )
 
 @router.put("/{id}", responses={status.HTTP_404_NOT_FOUND: {"model": Error}})
