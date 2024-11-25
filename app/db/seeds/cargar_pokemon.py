@@ -17,6 +17,7 @@ POKEMON_MOVES_CSV = "pokemon_moves.csv"
 DATABASE_URL = "sqlite:///app/db/database.py"
 engine = create_engine(DATABASE_URL)
 
+
 def cargar_pokemon(session: Session):
     pokemons = {}
     ids_movimientos_por_pokemon = {}
@@ -28,7 +29,7 @@ def cargar_pokemon(session: Session):
                 id=pokemon_id,
                 nombre=fila["identifier"],
                 url_imagen=f"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{fila['id']}.png",
-                altura=int(fila["height"]),
+                altura=int(fila["height"]) * 100,
                 peso=int(fila["weight"]),
                 tipo_1="",
                 tipo_2=None,
@@ -43,7 +44,7 @@ def cargar_pokemon(session: Session):
                 estadistica_speed=0,
                 evolucion_anterior=None,
                 evolucion_siguiente=None,
-                posibles_movimientos=[]
+                posibles_movimientos=[],
             )
             pokemons[pokemon_id] = pokemon
             ids_movimientos_por_pokemon[pokemon_id] = set()
@@ -139,7 +140,6 @@ def cargar_pokemon(session: Session):
             pokemon.id_evolucion_siguiente = evolution_id
             evolucion.id_evolucion_anterior = pokemon_id
 
-
     session.add_all(pokemons.values())
     session.commit()
 
@@ -154,8 +154,7 @@ def cargar_pokemon(session: Session):
                 continue
 
             pokemon_movimiento = PokemonMovimiento(
-                pokemon_id=pokemon_id,
-                movimiento_id=move_id
+                pokemon_id=pokemon_id, movimiento_id=move_id
             )
             ids_movimientos_por_pokemon[pokemon_id].add(move_id)
             session.add(pokemon_movimiento)
