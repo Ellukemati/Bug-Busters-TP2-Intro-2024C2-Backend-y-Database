@@ -17,6 +17,7 @@ class Integrante_pokemonPublic(Integrante_pokemonBase):
     pokemon_id: int
     naturaleza: str
     movimientos: list[MovimientoPublic]
+    id: int
 
 
 class EquipoPublic(EquipoBase):

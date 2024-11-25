@@ -30,3 +30,9 @@ def getmoves_id_pokemon(session: SessionDep, id: int) -> list[Pokemon]:
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND, detail="Movimiento not found"
     )
+
+@router.get("/")
+def show_pokemon(Session: SessionDep) -> list[Movimiento]:
+    query = select(Movimiento)
+    movimientos = Session.exec(query)
+    return movimientos
