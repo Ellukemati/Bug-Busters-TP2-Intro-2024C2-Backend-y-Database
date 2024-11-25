@@ -34,5 +34,5 @@ def getmoves_id_pokemon(session: SessionDep, id: int) -> list[Pokemon]:
 @router.get("/")
 def show_pokemon(Session: SessionDep) -> list[Movimiento]:
     query = select(Movimiento)
-    naturalezas = Session.exec(query)
-    return naturalezas
+    movimientos = Session.exec(query)
+    return movimientos
